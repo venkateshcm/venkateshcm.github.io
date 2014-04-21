@@ -1,0 +1,173 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>Reactor Pattern Part 2 - Applications with Blocking I/O — Venkatesh CM</title>
+  <meta name="author" content="Venkatesh CM"/>
+
+  
+  <meta name="description" content="The personal blog of Venkatesh."/>
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  
+  <link rel="canonical" href="https://www.venkateshcm.com/2014/04/Reactor-Pattern-Part-2-Non-blocking-I-O"/>
+  <link href="/favicon.png" rel="icon"/>
+  <link href="/stylesheets/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+  <link href="/stylesheets/bootstrap-responsive.min.css" rel="stylesheet" type="text/css"/>
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css"/>
+  <link href="/atom.xml" rel="alternate" title="Venkatesh CM" type="application/atom+xml"/>
+  <script src="//cdn.jsdelivr.net/jquery/1.11/jquery.min.js"></script>
+  <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.min.js"><\/script>')</script>
+  
+  <script type="text/javascript" src="//use.typekit.net/hmm6mfe.js"></script>
+  <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+  
+  <style id="search-style"></style>
+  
+
+  
+
+  
+
+</head>
+
+<body >
+  
+  <header role="banner">
+  <h1><a href="/">Venkatesh CM</a></h1>
+
+
+  <h2><span contenteditable='false'>A blog by an hacker, developer, architect, machine learning enthusiast and big data miner.</span></h2>
+
+
+</header>
+  
+  <nav class="navbar navbar-static-top" role="navigation"><div class="nav-collapse collapse">
+<ul class="nav subscription pull-right" data-subscription="rss">
+  <li><a href="/atom.xml" rel="alternate" data-type="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form class="navbar-search pull-right" action="https://www.google.com" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sites" value="www.venkateshcm.com" />
+    <input type="hidden" name="q" value="site:www.venkateshcm.com" />
+    <input class="search search-query" type="text" id="q" name="q"
+      placeholder="Search"
+      autocomplete="off" />
+  </fieldset>
+  
+  <ul class="dropdown-menu" role="listbox" id="search_listbox">
+    
+    <li data-index="zen of software design - part 2  ">
+      <a tabindex="-1" href="/2014/04/zen-of-software-design-part-2/">Zen of Software Design &hellip;</a>
+    </li>
+    
+    <li data-index="zen of software design - part 1  ">
+      <a tabindex="-1" href="/2014/04/Zen-Of-Software-Design-Part-1/">Zen of Software Design &hellip;</a>
+    </li>
+    
+    <li data-index="reactor pattern part 2 - applications with blocking i/o  ">
+      <a tabindex="-1" href="/2014/04/Reactor-Pattern-Part-2-Non-blocking-I-O/">Reactor Pattern Part 2 &hellip;</a>
+    </li>
+    
+    <li data-index="reactor pattern part 1 - applications with blocking i/o  ">
+      <a tabindex="-1" href="/2014/04/Reactor-Pattern-Part-1-Non-blocking-I-O/">Reactor Pattern Part 1 &hellip;</a>
+    </li>
+    
+  </ul>
+  
+</form>
+  
+</div>
+<ul class="nav main-navigation">
+  <li><a href="/">Home</a></li>
+  <li><a href="/about">About</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="content" class="container">
+    <p>In <a href="http://www.venkateshcm.com/2014/04/reactor-pattern-part-1-applications.html">Reactor Pattern Part 1 : Applications with Blocking I/O</a>, we had gone through a scenario of single threaded applications to maximise CPU usage and the corresponding issues we faced.</p>
+
+<p>In this blog, we will look at an alternative solution to maximise CPU usage.</p>
+
+<p>The diagram below from the part 1 blog we can notice that applications require CPU in busts and they have wait periods between the processing busts.</p>
+
+<p><img class="article-img" border="0" height="325" width="480" src="/img/blog/ThreeThreads.png" class="" style="display: inline-block;"></p>
+
+<p>If we treat processing busts as events and queue events to be executed on a single thread, we can make sure the thread (CPU) is always occupied and thus giving us maximising CPU usage and avoiding unnecessary context switching.</p>
+
+<p>Consider processing blocks as events without any I/O calls within them which can be executed non-sequentially/asynchronously. The code should be split into execution blocks (events) which can be executed separately with other requests events executed between them.</p>
+
+<br/>
+
+
+<p><b><i>Event Loop</i></b></p>
+
+<p>An event loop is a program loop where a thread waits for events and executes events that occur in a program. For more info on checkout Event Loop</p>
+
+<br/>
+
+
+<p><b><i>Unix File Descriptors</i></b></p>
+
+<p>Following Unix principle of everything is a file, file descriptor is used to detect events when reading/writing to file, network communication, device communication and inter-process communication. System calls &ldquo;epoll&rdquo; and &ldquo;pselect&rdquo; are used to detect file descriptor state change without blocking application.</p>
+
+<p>The below diagram shows a simplified event loop which goes through four stages in each loop.</p>
+
+<ul>
+<li>Check if a new event is created (i.e. a web request has come in or a call back event has occurred) and add new event is added to the queue.</li>
+<li>Pick an event from the queue</li>
+<li>Execute event</li>
+<li>Create a call-back event (i.e. database query or network access call-back when the response has arrived. Call-back events are handled by epoll or pselect.</li>
+</ul>
+
+
+<p><img class="article-img" border="0" height="325" width="480" src="/img/blog/EventLoop.png" class="" style="display: inline-block;"></p>
+
+<p>The solution described above is a simplified version of Reactor Pattern.</p>
+
+<br/>
+
+
+<p><b><i>Advantages of Reactor Pattern</i></b></p>
+
+<ul>
+<li>Optimal usage of CPU.</li>
+<li>Can handle more requests with same hardware.</li>
+<li>Can scale above C10K limit</li>
+</ul>
+
+
+<br/>
+
+
+<p><b><i>Disadvantages of Reactor Pattern</i></b></p>
+
+<ul>
+<li>Asynchronous event based code base makes it difficult to understand and structure code. Promise library can help.</li>
+<li>Debugging code will be more difficult since stack trace begins from the call-back instead of start of request.</li>
+</ul>
+
+
+<p>Some of the disadvantages can be mitigated by using fiber (ruby fibers, node fibers), will cover Fibers in another blog.</p>
+
+  </div>
+  <footer role="contentinfo">
+<script src="/js/typo.js"></script>
+</footer>
+  
+
+
+
+
+
+
+
+
+</body>
+</html>

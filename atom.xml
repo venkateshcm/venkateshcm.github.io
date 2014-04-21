@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Venkatesh CM]]></title>
+  <link href="https://www.venkateshcm.com/atom.xml" rel="self"/>
+  <link href="https://www.venkateshcm.com/"/>
+  <updated>2014-04-21T17:13:41+05:30</updated>
+  <id>https://www.venkateshcm.com/</id>
+  <author>
+    <name><![CDATA[Venkatesh CM]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Zen of Software Design - Part 2]]></title>
+    <link href="https://www.venkateshcm.com/2014/04/zen-of-software-design-part-2/"/>
+    <updated>2014-04-21T11:44:38+05:30</updated>
+    <id>https://www.venkateshcm.com/2014/04/zen-of-software-design-part-2</id>
+    <content type="html"><![CDATA[
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Zen of Software Design - Part 1]]></title>
+    <link href="https://www.venkateshcm.com/2014/04/Zen-Of-Software-Design-Part-1/"/>
+    <updated>2014-04-11T00:00:00+05:30</updated>
+    <id>https://www.venkateshcm.com/2014/04/Zen-Of-Software-Design-Part-1</id>
+    <content type="html"><![CDATA[<p>I call it Zen of Software Design.. instead of <a href="http://legacy.python.org/dev/peps/pep-0020/">Zen of Python</a> which is presented at the bottom of this blog for reference and below is my interpretations and thoughts on it</p>
+
+<p>Lines 1 to 9 of <a href="http://legacy.python.org/dev/peps/pep-0020/">Zen of Python</a> is covered in this blog, Lines 10 to 19 will be covered in Part 2.</p>
+
+<br/>
+
+
+<p><b><i>Interpretation</i></b></p>
+
+<p>The way to read &ldquo;better than&rdquo; statements in above poem, is to understand that one does not always win over other and both have their place under sun. But the poem advocates one over another when all things are equal and there is a choice to be made. i.e. leaning or favoring one over another.</p>
+
+<br/>
+
+
+<p><b><i>Beautiful is better than ugly</i></b></p>
+
+<p>While it is easy to understand that beautiful is better than ugly, it is very subjective to know what is beautiful and what is ugly. If you look at source code as an art, like a painting, bad code/design will stink (<a href="http://en.wikipedia.org/wiki/Code_smell">code-smell</a>) and makes you feel uncomfortable instinctively. I don&rsquo;t think there is standard rules by which you can differentiate beautiful from ugly design similar to good/bad paintings. I guess it comes from looking at different codebase and experience.</p>
+
+<br/>
+
+
+<p><b><i>Explicit is better than implicit.</i></b></p>
+
+<p>It should be obvious to figure-out what&rsquo;s happening while looking at the code, for someone not familiar with the codebase. Usually implicit is looks like magic which happens without any clue how it is working. There are two kind of implicits we face in day-to-day work.</p>
+
+<ul>
+<li>Well known implicits :&ndash; Things which are well documented and have become standard way of doing things. These implicits usually go across project team boundaries. Example : SpringMVC annotations, Rails conventions</li>
+<li>Project implicits :&ndash; Things which project teams builds within the project which is not something a new developer would be acquainted with in other projects.</li>
+</ul>
+
+
+<br>
+
+
+<p>I have seen developers going overboard with Annotations or conventions in projects, where it is difficult to figure-out how things work. A rule of thumb I use to figure out if we have gone overboard is by asking myself the question &ldquo;Can I explain, to a new developer joining team, all the implicit things happening in the project within 1 hour session ?&rdquo;.</p>
+
+<br/>
+
+
+<p><b><i>Simple is better than complex.</i></b></p>
+
+<p>Again this seems very obvious but still elusive. No one wants to create a complex system but creating simple design/software is a complex job.</p>
+
+<p>Few things which help me be on track of simplicity while looking at the code</p>
+
+<ul>
+<li><p>How many execution flows/paths exists ?.</p>
+
+<p>if there are few execution paths than its easy to keep them in mind and figure out a specific scenario falls in which one of the paths.</p></li>
+<li><p>How easy is it to figure-out a given scenario falls under which execution path ?.</p>
+
+<p>It should be easy to figure that out, if the application is well designed and simple to remember.</p></li>
+<li><p>How many exceptions to the conventional flows exist ?.</p>
+
+<p>In every application there are few exceptional scenarios which don&rsquo;t fall under normal execution paths and need exceptional flows for them. These should be minimal and explicitly identified.</p></li>
+<li><p>How easy it is to explain high level design to a new developer ?.</p>
+
+<p>I found this rule of thumb to be very helpful. It becomes obvious when you explain (or imagining to explain) how application works to a new developer. If you can explain it without flinching several times when the developer says &ldquo;ah in scenario x app will do this&rdquo; and you go hmmm its mostly correct but there are some other issues etc.</p></li>
+</ul>
+
+
+<br/>
+
+
+<p><b><i>Complex is better than complicated.</i></b></p>
+
+<p>Design can be complex because domain is complex but sometime domain is simple but software is designed or implemented in complicated way. Design should be as-complex or as-simple as the requirement needs, not more and not less.</p>
+
+<p>The questions I ask to figure out if design is complicated is</p>
+
+<ul>
+<li>What part of requirement is causing the design to be complex?</li>
+<li>Is the technology choice introducing additional complexity?</li>
+<li>Is there any negotiable requirement which can be removed to make it more simpler?</li>
+<li>Are we designing the system for future proofing which might not be required?</li>
+</ul>
+
+
+<br/>
+
+
+<p><b><i>Flat is better than nested.</i></b></p>
+
+<p>When we look at code there are few obvious cases where this is true. For example it is better to have several flat functions than having one long nested function. For example :&ndash; Using Strategy Design Pattern or Command Design pattern to separate code into independent units. Where it is not very obvious and still useful to think is</p>
+
+<ul>
+<li>How many layers are we introducing in software architecture ?</li>
+<li>How many jumps do we need to make to get to the final value (may be cached value or database lookup) ?</li>
+<li>Is the path of execution intermingled and can not be modified independently?</li>
+</ul>
+
+
+<br/>
+
+
+<p><b><i>Sparse is better than dense.</i></b>
+<b><i>Readability counts.</i></b></p>
+
+<p>Few times I have questioned myself if single responsibility principle, unit testing, dependency injection and design patterns are good. The reason for this doubt is that after following single responsibility principle, unit testing with dependency injection and following design pattern, a small codebase grows to considerable code size.  I call this new increased codebase sparse compared with earlier code which was dense.</p>
+
+<p>The advantages of sparse code base compared to dense code is</p>
+
+<ul>
+<li>It is easier to understand and modify.</li>
+<li>It is easier to extend to add more scenarios.</li>
+<li>It is easier to isolate an issue and fix it.</li>
+</ul>
+
+
+<br/>
+
+
+<p><b><i>Special cases aren&rsquo;t special enough to break the rules.</i></b>
+<b><i>Although practicality beats purity.</i></b></p>
+
+<p>Good software Architecture/Design usually settle with a set of rules like</p>
+
+<ul>
+<li>Execution flows/paths</li>
+<li>Logical Architecture Layers and how each layer communicated with another layer.</li>
+<li>Inter-process communication protocols</li>
+</ul>
+
+
+<p>Every now-and-then a new requirement which breaks design rules under which application has operating comes in. Usual tendency is to treat this as special case which works differently to existing architecture.</p>
+
+<p>While it might be the right approach in few cases, we should</p>
+
+<ul>
+<li>strive to see if this special case can be modelled as one of the existing flows</li>
+<li>check if existing rules can be extended to incorporate the new requirement as first class design decision instead of treating it as special case which breaks the rules.</li>
+<li>check if we have been adding a lot of special cases and do a course correction if required.</li>
+</ul>
+
+
+<p>On the other hand if they truly are special cases and trying to extend or modeling it has one of the existing flows make design complicated, we should not hesitate to incorporate the new requirement as special case as a pragmatic/practical architect or developer should do.</p>
+
+<p>Lines 10 to 19 will be covered in Part 2 of this blog</p>
+
+<pre><code>$ python
+
+&gt;&gt;&gt; import this
+The Zen of Python, by Tim Peters
+
+1 Beautiful is better than ugly.
+2 Explicit is better than implicit.
+3 Simple is better than complex.
+4 Complex is better than complicated.
+5 Flat is better than nested.
+6 Sparse is better than dense.
+7 Readability counts.
+8 Special cases aren't special enough to break the rules.
+9 Although practicality beats purity.
+10 Errors should never pass silently.
+11 Unless explicitly silenced.
+12 In the face of ambiguity, refuse the temptation to guess.
+13 There should be one-- and preferably only one --obvious way to do it.
+14 Although that way may not be obvious at first unless you're Dutch.
+15 Now is better than never.
+16 Although never is often better than *right* now.
+17 If the implementation is hard to explain, it's a bad idea.
+18 If the implementation is easy to explain, it may be a good idea.
+19 Namespaces are one honking great idea -- let's do more of those! 
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Reactor Pattern Part 2 - Applications with Blocking I/O]]></title>
+    <link href="https://www.venkateshcm.com/2014/04/Reactor-Pattern-Part-2-Non-blocking-I-O/"/>
+    <updated>2014-04-10T00:00:00+05:30</updated>
+    <id>https://www.venkateshcm.com/2014/04/Reactor-Pattern-Part-2-Non-blocking-I-O</id>
+    <content type="html"><![CDATA[<p>In <a href="http://www.venkateshcm.com/2014/04/reactor-pattern-part-1-applications.html">Reactor Pattern Part 1 : Applications with Blocking I/O</a>, we had gone through a scenario of single threaded applications to maximise CPU usage and the corresponding issues we faced.</p>
+
+<p>In this blog, we will look at an alternative solution to maximise CPU usage.</p>
+
+<p>The diagram below from the part 1 blog we can notice that applications require CPU in busts and they have wait periods between the processing busts.</p>
+
+<p><img class="article-img" border="0" height="325" width="480" src="https://www.venkateshcm.com/img/blog/ThreeThreads.png" class="" style="display: inline-block;"></p>
+
+<p>If we treat processing busts as events and queue events to be executed on a single thread, we can make sure the thread (CPU) is always occupied and thus giving us maximising CPU usage and avoiding unnecessary context switching.</p>
+
+<p>Consider processing blocks as events without any I/O calls within them which can be executed non-sequentially/asynchronously. The code should be split into execution blocks (events) which can be executed separately with other requests events executed between them.</p>
+
+<br/>
+
+
+<p><b><i>Event Loop</i></b></p>
+
+<p>An event loop is a program loop where a thread waits for events and executes events that occur in a program. For more info on checkout Event Loop</p>
+
+<br/>
+
+
+<p><b><i>Unix File Descriptors</i></b></p>
+
+<p>Following Unix principle of everything is a file, file descriptor is used to detect events when reading/writing to file, network communication, device communication and inter-process communication. System calls &ldquo;epoll&rdquo; and &ldquo;pselect&rdquo; are used to detect file descriptor state change without blocking application.</p>
+
+<p>The below diagram shows a simplified event loop which goes through four stages in each loop.</p>
+
+<ul>
+<li>Check if a new event is created (i.e. a web request has come in or a call back event has occurred) and add new event is added to the queue.</li>
+<li>Pick an event from the queue</li>
+<li>Execute event</li>
+<li>Create a call-back event (i.e. database query or network access call-back when the response has arrived. Call-back events are handled by epoll or pselect.</li>
+</ul>
+
+
+<p><img class="article-img" border="0" height="325" width="480" src="https://www.venkateshcm.com/img/blog/EventLoop.png" class="" style="display: inline-block;"></p>
+
+<p>The solution described above is a simplified version of Reactor Pattern.</p>
+
+<br/>
+
+
+<p><b><i>Advantages of Reactor Pattern</i></b></p>
+
+<ul>
+<li>Optimal usage of CPU.</li>
+<li>Can handle more requests with same hardware.</li>
+<li>Can scale above C10K limit</li>
+</ul>
+
+
+<br/>
+
+
+<p><b><i>Disadvantages of Reactor Pattern</i></b></p>
+
+<ul>
+<li>Asynchronous event based code base makes it difficult to understand and structure code. Promise library can help.</li>
+<li>Debugging code will be more difficult since stack trace begins from the call-back instead of start of request.</li>
+</ul>
+
+
+<p>Some of the disadvantages can be mitigated by using fiber (ruby fibers, node fibers), will cover Fibers in another blog.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Reactor Pattern Part 1 - Applications with Blocking I/O]]></title>
+    <link href="https://www.venkateshcm.com/2014/04/Reactor-Pattern-Part-1-Non-blocking-I-O/"/>
+    <updated>2014-04-09T00:00:00+05:30</updated>
+    <id>https://www.venkateshcm.com/2014/04/Reactor-Pattern-Part-1-Non-blocking-I-O</id>
+    <content type="html"><![CDATA[<br/>
+
+
+<p><b><i>Applications with Blocking I/O</i></b></p>
+
+<p>I am assuming a simple scenario of single threaded application like Ruby on Rails Application running on a computer with single CPU. In real world, OS splits CPU time to multiple applications and does a regular context switching.</p>
+
+<p>In a single threaded application like Ruby on Rails Applications, requests are processed by a single thread. When the thread makes a I/O bound call like database query or network call, application/thread is blocked even though it could be used to work on other requests.</p>
+
+<p><img class="article-img" border="0" height="325" width="480" src="https://www.venkateshcm.com/img/blog/SingleThread.png" class="" style="display: inline-block;"></p>
+
+<p>A solution to get around the above problem is to have multiple applications running on the same box. So when one application&rsquo;s thread is blocked another application&rsquo;s thread can proceed with another request processing. In below diagram there are two applications competing for CPU time and second application consumes CPU between a2 and a1 time. But we still see that CPU is idle between a1 and t1 and between t2 and a2.</p>
+
+<p><img class="article-img" border="0" height="325" width="480" src="https://www.venkateshcm.com/img/blog/TwoThreads.png" class="" style="display: inline-block;"></p>
+
+<p>To avoid any idle time on CPU we can add more applications, but this will lead to unnecessary context switch which will degrade performance further. For example in the diagram below, third application is switched with second application while third application is still processing a request and needs CPU time.</p>
+
+<p><img class="article-img" border="0" height="325" width="480" src="https://www.venkateshcm.com/img/blog/ThreeThreads.png" class="" style="display: inline-block;"></p>
+
+<p>As shown in the above diagram, we can notice two issues
+*   OS switches CPU from an application which needs CPU for processing.
+*   OS switches CPU to an application which is still waiting for IO.</p>
+
+<p>These two issues are due to pre-emptive thread switching. To achieve optimal CPU allocation, application should be able to request for CPU time or give-up CPU time in a cooperative manner instead of pre-emptive switching.</p>
+
+<p>Reactor Patternprovides an work around for the above problem using epoll.</p>
+
+<ul>
+<li><a href="http://en.wikipedia.org/wiki/Nonpreemptive_multitasking">http://en.wikipedia.org/wiki/Nonpreemptive_multitasking</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Preemption_(computing">http://en.wikipedia.org/wiki/Preemption_(computing)</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Reactor_pattern">http://en.wikipedia.org/wiki/Reactor_pattern</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>

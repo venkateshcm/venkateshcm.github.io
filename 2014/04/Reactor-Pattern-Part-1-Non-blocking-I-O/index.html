@@ -1,0 +1,214 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>Reactor Pattern Part 1 - Applications with Blocking I/O — Venkatesh CM</title>
+  <meta name="author" content="Venkatesh CM"/>
+
+  
+  <meta name="description" content="The personal blog of Venkatesh."/>
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  
+  <link rel="canonical" href="https://www.venkateshcm.com/2014/04/Reactor-Pattern-Part-1-Non-blocking-I-O"/>
+  <link href="/favicon.png" rel="icon"/>
+  <link href="/stylesheets/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+  <link href="/stylesheets/bootstrap-responsive.min.css" rel="stylesheet" type="text/css"/>
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css"/>
+  <link href="/atom.xml" rel="alternate" title="Venkatesh CM" type="application/atom+xml"/>
+  <script src="//cdn.jsdelivr.net/jquery/1.11/jquery.min.js"></script>
+  <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.min.js"><\/script>')</script>
+  
+  <script type="text/javascript" src="//use.typekit.net/hmm6mfe.js"></script>
+  <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+  
+  <style id="search-style"></style>
+  
+
+  
+
+  
+
+</head>
+
+<body >
+  
+  <header role="banner" class="hidden">
+  <h1><a href="/">Venkatesh CM</a></h1>
+
+
+  <h2><span contenteditable='false'>A blog by an hacker, developer, architect, machine learning enthusiast and big data miner.</span></h2>
+
+
+</header>
+  
+  <nav class="navbar navbar-static-top" role="navigation"><div class="nav-collapse collapse">
+<ul class="nav subscription pull-right" data-subscription="rss">
+  <li><a href="/atom.xml" rel="alternate" data-type="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form class="navbar-search pull-right" action="https://www.google.com" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sites" value="www.venkateshcm.com" />
+    <input type="hidden" name="q" value="site:www.venkateshcm.com" />
+    <input class="search search-query" type="text" id="q" name="q"
+      placeholder="Search"
+      autocomplete="off" />
+  </fieldset>
+  
+  <ul class="dropdown-menu" role="listbox" id="search_listbox">
+    
+    <li data-index="zen of software design - part 2  ">
+      <a tabindex="-1" href="/2014/04/zen-of-software-design-part-2/">Zen of Software Design &hellip;</a>
+    </li>
+    
+    <li data-index="zen of software design - part 1  ">
+      <a tabindex="-1" href="/2014/04/Zen-Of-Software-Design-Part-1/">Zen of Software Design &hellip;</a>
+    </li>
+    
+    <li data-index="reactor pattern part 2 - applications with blocking i/o  ">
+      <a tabindex="-1" href="/2014/04/Reactor-Pattern-Part-2-Non-blocking-I-O/">Reactor Pattern Part 2 &hellip;</a>
+    </li>
+    
+    <li data-index="reactor pattern part 1 - applications with blocking i/o  ">
+      <a tabindex="-1" href="/2014/04/Reactor-Pattern-Part-1-Non-blocking-I-O/">Reactor Pattern Part 1 &hellip;</a>
+    </li>
+    
+  </ul>
+  
+</form>
+  
+</div>
+<ul class="nav main-navigation">
+  <li><a href="/">Home</a></li>
+  <li><a href="/about">About</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="content" class="container">
+    <article class="hentry span10 offset1" role="article">
+  
+  <header>
+    
+      
+        
+          
+        
+      
+      
+      <h1 class="entry-title">Reactor Pattern Part 1 - Applications with Blocking I/O</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+
+<time datetime="2014-04-09T00:00:00+05:30" data-updated="true"></time>
+      </p>
+    
+  </header>
+
+
+<div class="entry-content lettrine"><br/>
+
+
+<p><b><i>Applications with Blocking I/O</i></b></p>
+
+<p>I am assuming a simple scenario of single threaded application like Ruby on Rails Application running on a computer with single CPU. In real world, OS splits CPU time to multiple applications and does a regular context switching.</p>
+
+<p>In a single threaded application like Ruby on Rails Applications, requests are processed by a single thread. When the thread makes a I/O bound call like database query or network call, application/thread is blocked even though it could be used to work on other requests.</p>
+
+<p><img class="article-img" border="0" height="325" width="480" src="/img/blog/SingleThread.png" class="" style="display: inline-block;"></p>
+
+<p>A solution to get around the above problem is to have multiple applications running on the same box. So when one application&rsquo;s thread is blocked another application&rsquo;s thread can proceed with another request processing. In below diagram there are two applications competing for CPU time and second application consumes CPU between a2 and a1 time. But we still see that CPU is idle between a1 and t1 and between t2 and a2.</p>
+
+<p><img class="article-img" border="0" height="325" width="480" src="/img/blog/TwoThreads.png" class="" style="display: inline-block;"></p>
+
+<p>To avoid any idle time on CPU we can add more applications, but this will lead to unnecessary context switch which will degrade performance further. For example in the diagram below, third application is switched with second application while third application is still processing a request and needs CPU time.</p>
+
+<p><img class="article-img" border="0" height="325" width="480" src="/img/blog/ThreeThreads.png" class="" style="display: inline-block;"></p>
+
+<p>As shown in the above diagram, we can notice two issues
+*   OS switches CPU from an application which needs CPU for processing.
+*   OS switches CPU to an application which is still waiting for IO.</p>
+
+<p>These two issues are due to pre-emptive thread switching. To achieve optimal CPU allocation, application should be able to request for CPU time or give-up CPU time in a cooperative manner instead of pre-emptive switching.</p>
+
+<p>Reactor Patternprovides an work around for the above problem using epoll.</p>
+
+<ul>
+<li><a href="http://en.wikipedia.org/wiki/Nonpreemptive_multitasking">http://en.wikipedia.org/wiki/Nonpreemptive_multitasking</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Preemption_(computing">http://en.wikipedia.org/wiki/Preemption_(computing)</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Reactor_pattern">http://en.wikipedia.org/wiki/Reactor_pattern</a></li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Venkatesh CM</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+
+<time datetime="2014-04-09T00:00:00+05:30" data-updated="true"></time>
+      
+
+
+    </p>
+    <p class="meta">
+      
+        
+          <a class="basic-alignment left" href="/2014/04/Reactor-Pattern-Part-2-Non-blocking-I-O/" title="Next Post: Reactor Pattern Part 2 - Applications with Blocking I/O">&larr;<span class="hide-mobile">&nbsp;Reactor Pattern Part 2 - Applications with Blocking I/O</span></a>
+        
+        
+      
+    </p>
+  </footer>
+	
+</article>
+
+  </div>
+  <footer role="contentinfo">
+<script src="/js/typo.js"></script>
+</footer>
+  
+
+
+
+
+
+
+
+
+</body>
+</html>
