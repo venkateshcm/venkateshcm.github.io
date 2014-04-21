@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Venkatesh CM]]></title>
-  <link href="https://www.venkateshcm.com/atom.xml" rel="self"/>
-  <link href="https://www.venkateshcm.com/"/>
-  <updated>2014-04-21T17:13:41+05:30</updated>
-  <id>https://www.venkateshcm.com/</id>
+  <link href="http://venkateshcm.github.io/atom.xml" rel="self"/>
+  <link href="http://venkateshcm.github.io/"/>
+  <updated>2014-04-21T17:58:23+05:30</updated>
+  <id>http://venkateshcm.github.io/</id>
   <author>
     <name><![CDATA[Venkatesh CM]]></name>
     
@@ -14,19 +14,10 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Zen of Software Design - Part 2]]></title>
-    <link href="https://www.venkateshcm.com/2014/04/zen-of-software-design-part-2/"/>
-    <updated>2014-04-21T11:44:38+05:30</updated>
-    <id>https://www.venkateshcm.com/2014/04/zen-of-software-design-part-2</id>
-    <content type="html"><![CDATA[
-]]></content>
-  </entry>
-  
-  <entry>
     <title type="html"><![CDATA[Zen of Software Design - Part 1]]></title>
-    <link href="https://www.venkateshcm.com/2014/04/Zen-Of-Software-Design-Part-1/"/>
+    <link href="http://venkateshcm.github.io/2014/04/Zen-Of-Software-Design-Part-1/"/>
     <updated>2014-04-11T00:00:00+05:30</updated>
-    <id>https://www.venkateshcm.com/2014/04/Zen-Of-Software-Design-Part-1</id>
+    <id>http://venkateshcm.github.io/2014/04/Zen-Of-Software-Design-Part-1</id>
     <content type="html"><![CDATA[<p>I call it Zen of Software Design.. instead of <a href="http://legacy.python.org/dev/peps/pep-0020/">Zen of Python</a> which is presented at the bottom of this blog for reference and below is my interpretations and thoughts on it</p>
 
 <p>Lines 1 to 9 of <a href="http://legacy.python.org/dev/peps/pep-0020/">Zen of Python</a> is covered in this blog, Lines 10 to 19 will be covered in Part 2.</p>
@@ -196,16 +187,16 @@ The Zen of Python, by Tim Peters
   
   <entry>
     <title type="html"><![CDATA[Reactor Pattern Part 2 - Applications with Blocking I/O]]></title>
-    <link href="https://www.venkateshcm.com/2014/04/Reactor-Pattern-Part-2-Non-blocking-I-O/"/>
+    <link href="http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-2-Non-blocking-I-O/"/>
     <updated>2014-04-10T00:00:00+05:30</updated>
-    <id>https://www.venkateshcm.com/2014/04/Reactor-Pattern-Part-2-Non-blocking-I-O</id>
+    <id>http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-2-Non-blocking-I-O</id>
     <content type="html"><![CDATA[<p>In <a href="http://www.venkateshcm.com/2014/04/reactor-pattern-part-1-applications.html">Reactor Pattern Part 1 : Applications with Blocking I/O</a>, we had gone through a scenario of single threaded applications to maximise CPU usage and the corresponding issues we faced.</p>
 
 <p>In this blog, we will look at an alternative solution to maximise CPU usage.</p>
 
 <p>The diagram below from the part 1 blog we can notice that applications require CPU in busts and they have wait periods between the processing busts.</p>
 
-<p><img class="article-img" border="0" height="325" width="480" src="https://www.venkateshcm.com/img/blog/ThreeThreads.png" class="" style="display: inline-block;"></p>
+<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.github.io/img/blog/ThreeThreads.png" class="" style="display: inline-block;"></p>
 
 <p>If we treat processing busts as events and queue events to be executed on a single thread, we can make sure the thread (CPU) is always occupied and thus giving us maximising CPU usage and avoiding unnecessary context switching.</p>
 
@@ -235,7 +226,7 @@ The Zen of Python, by Tim Peters
 </ul>
 
 
-<p><img class="article-img" border="0" height="325" width="480" src="https://www.venkateshcm.com/img/blog/EventLoop.png" class="" style="display: inline-block;"></p>
+<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.github.io/img/blog/EventLoop.png" class="" style="display: inline-block;"></p>
 
 <p>The solution described above is a simplified version of Reactor Pattern.</p>
 
@@ -268,9 +259,9 @@ The Zen of Python, by Tim Peters
   
   <entry>
     <title type="html"><![CDATA[Reactor Pattern Part 1 - Applications with Blocking I/O]]></title>
-    <link href="https://www.venkateshcm.com/2014/04/Reactor-Pattern-Part-1-Non-blocking-I-O/"/>
+    <link href="http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-1-Non-blocking-I-O/"/>
     <updated>2014-04-09T00:00:00+05:30</updated>
-    <id>https://www.venkateshcm.com/2014/04/Reactor-Pattern-Part-1-Non-blocking-I-O</id>
+    <id>http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-1-Non-blocking-I-O</id>
     <content type="html"><![CDATA[<br/>
 
 
@@ -280,15 +271,15 @@ The Zen of Python, by Tim Peters
 
 <p>In a single threaded application like Ruby on Rails Applications, requests are processed by a single thread. When the thread makes a I/O bound call like database query or network call, application/thread is blocked even though it could be used to work on other requests.</p>
 
-<p><img class="article-img" border="0" height="325" width="480" src="https://www.venkateshcm.com/img/blog/SingleThread.png" class="" style="display: inline-block;"></p>
+<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.github.io/img/blog/SingleThread.png" class="" style="display: inline-block;"></p>
 
 <p>A solution to get around the above problem is to have multiple applications running on the same box. So when one application&rsquo;s thread is blocked another application&rsquo;s thread can proceed with another request processing. In below diagram there are two applications competing for CPU time and second application consumes CPU between a2 and a1 time. But we still see that CPU is idle between a1 and t1 and between t2 and a2.</p>
 
-<p><img class="article-img" border="0" height="325" width="480" src="https://www.venkateshcm.com/img/blog/TwoThreads.png" class="" style="display: inline-block;"></p>
+<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.github.io/img/blog/TwoThreads.png" class="" style="display: inline-block;"></p>
 
 <p>To avoid any idle time on CPU we can add more applications, but this will lead to unnecessary context switch which will degrade performance further. For example in the diagram below, third application is switched with second application while third application is still processing a request and needs CPU time.</p>
 
-<p><img class="article-img" border="0" height="325" width="480" src="https://www.venkateshcm.com/img/blog/ThreeThreads.png" class="" style="display: inline-block;"></p>
+<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.github.io/img/blog/ThreeThreads.png" class="" style="display: inline-block;"></p>
 
 <p>As shown in the above diagram, we can notice two issues
 *   OS switches CPU from an application which needs CPU for processing.
