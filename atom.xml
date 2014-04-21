@@ -4,7 +4,7 @@
   <title><![CDATA[Venkatesh CM]]></title>
   <link href="http://venkateshcm.github.io/atom.xml" rel="self"/>
   <link href="http://venkateshcm.github.io/"/>
-  <updated>2014-04-21T19:47:05+05:30</updated>
+  <updated>2014-04-21T19:54:29+05:30</updated>
   <id>http://venkateshcm.github.io/</id>
   <author>
     <name><![CDATA[Venkatesh CM]]></name>
@@ -190,7 +190,7 @@ The Zen of Python, by Tim Peters
     <link href="http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-2-Non-blocking-I-O/"/>
     <updated>2014-04-10T00:00:00+05:30</updated>
     <id>http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-2-Non-blocking-I-O</id>
-    <content type="html"><![CDATA[<p>In <a href="http://venkateshcm.github.io/2014/04/reactor-pattern-part-1-applications.html">Reactor Pattern Part 1 : Applications with Blocking I/O</a>, we had gone through a scenario of single threaded applications to maximise CPU usage and the corresponding issues we faced.</p>
+    <content type="html"><![CDATA[<p>In <a href="http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-1-Non-blocking-I-O/">Reactor Pattern Part 1 : Applications with Blocking I/O</a>, we had gone through a scenario of single threaded applications to maximise CPU usage and the corresponding issues we faced.</p>
 
 <p>In this blog, we will look at an alternative solution to maximise CPU usage.</p>
 
