@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
-  <title>Reactor Pattern Part 2 - Applications with Blocking I/O — Venkatesh CM</title>
+  <title>Silver Bullet Solution — Venkatesh CM</title>
   <meta name="author" content="Venkatesh CM"/>
 
   
@@ -13,7 +13,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
   
-  <link rel="canonical" href="http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-2-Non-blocking-I-O"/>
+  <link rel="canonical" href="http://venkateshcm.github.io/2014/04/silver-bullet-solution"/>
   <link href="/img/favicon.png" rel="icon"/>
   <link href="/stylesheets/bootstrap.min.css" rel="stylesheet" type="text/css"/>
   <link href="/stylesheets/bootstrap-responsive.min.css" rel="stylesheet" type="text/css"/>
@@ -36,7 +36,7 @@
 
 <body >
   
-  <header role="banner">
+  <header role="banner" class="hidden">
   <h1><a href="/">Venkatesh CM</a></h1>
 
 
@@ -95,70 +95,110 @@
 
 </nav>
   <div id="content" class="container">
-    <p>In <a href="http://venkateshcm.github.io/2014/04/reactor-pattern-part-1-applications.html">Reactor Pattern Part 1 : Applications with Blocking I/O</a>, we had gone through a scenario of single threaded applications to maximise CPU usage and the corresponding issues we faced.</p>
-
-<p>In this blog, we will look at an alternative solution to maximise CPU usage.</p>
-
-<p>The diagram below from the part 1 blog we can notice that applications require CPU in busts and they have wait periods between the processing busts.</p>
-
-<p><img class="article-img" border="0" height="325" width="480" src="/img/blog/ThreeThreads.png" class="" style="display: inline-block;"></p>
-
-<p>If we treat processing busts as events and queue events to be executed on a single thread, we can make sure the thread (CPU) is always occupied and thus giving us maximising CPU usage and avoiding unnecessary context switching.</p>
-
-<p>Consider processing blocks as events without any I/O calls within them which can be executed non-sequentially/asynchronously. The code should be split into execution blocks (events) which can be executed separately with other requests events executed between them.</p>
-
-<br/>
-
-
-<p><b><i>Event Loop</i></b></p>
-
-<p>An event loop is a program loop where a thread waits for events and executes events that occur in a program. For more info on checkout Event Loop</p>
-
-<br/>
+    <article class="hentry span10 offset1" role="article">
+  
+  <header>
+    
+      
+        
+          
+        
+      
+      
+      <h1 class="entry-title">Silver Bullet Solution</h1>
+    
+    
+      <p class="meta">
+        
 
 
-<p><b><i>Unix File Descriptors</i></b></p>
 
-<p>Following Unix principle of everything is a file, file descriptor is used to detect events when reading/writing to file, network communication, device communication and inter-process communication. System calls &ldquo;epoll&rdquo; and &ldquo;pselect&rdquo; are used to detect file descriptor state change without blocking application.</p>
 
-<p>The below diagram shows a simplified event loop which goes through four stages in each loop.</p>
+
+
+
+
+  
+
+
+
+<time datetime="2014-04-08T00:00:00+05:30" data-updated="true">08 April, 2014</time>
+      </p>
+    
+  </header>
+
+
+<div class="entry-content lettrine"><p>While working on a solution for a problem, we try to find a solution which works in all conditions or situations. There are egos built-up on which solution is better or solves all the problems.
+But rarely have I seen a solution which fixes the problem completely with-out any side effects.</p>
+
+<p>What usually happens is we</p>
 
 <ul>
-<li>Check if a new event is created (i.e. a web request has come in or a call back event has occurred) and add new event is added to the queue.</li>
-<li>Pick an event from the queue</li>
-<li>Execute event</li>
-<li>Create a call-back event (i.e. database query or network access call-back when the response has arrived. Call-back events are handled by epoll or pselect.</li>
+<li><p>move the problem (or issue) from one area to other area.</p>
+
+<p>Example :&ndash; In database normalisation we improve performance of add/update by normalising but causing read performance issues.</p></li>
+<li><p>solve one problem at the cost of introducing another problem.</p>
+
+<p>Example :&ndash; We introduce redundancy to gain retrieval performance at the cost of multiple updates (due to redundancy).</p></li>
 </ul>
 
 
-<p><img class="article-img" border="0" height="325" width="480" src="/img/blog/EventLoop.png" class="" style="display: inline-block;"></p>
+<p>This shows that problems are not really solved but just moved around or converted to a different problem.</p>
 
-<p>The solution described above is a simplified version of Reactor Pattern.</p>
+<p>But we still find and use solutions you might say. Yes, we do and we do it by trading off one type of problem to another type of problem.</p>
 
-<br/>
+<p>So the Art of finding a solution to a problem is identifying problems you are willing to live-with and problems you can not compromise on.</p>
 
+<p>In fact, I have found different solutions by just compromising on a dimension of existing solution and to find a new solution.</p>
 
-<p><b><i>Advantages of Reactor Pattern</i></b></p>
+<p>Reference</p>
 
-<ul>
-<li>Optimal usage of CPU.</li>
-<li>Can handle more requests with same hardware.</li>
-<li>Can scale above C10K limit</li>
-</ul>
+<ol>
+<li><p><a href="http://en.wikipedia.org/wiki/No_free_lunch_theorem">No Free Lunch theorems</a></p></li>
+<li><p><a href="http://en.wikipedia.org/wiki/CAP_theorem">CAP theorem</a></p></li>
+</ol>
 
-
-<br/>
-
-
-<p><b><i>Disadvantages of Reactor Pattern</i></b></p>
-
-<ul>
-<li>Asynchronous event based code base makes it difficult to understand and structure code. Promise library can help.</li>
-<li>Debugging code will be more difficult since stack trace begins from the call-back instead of start of request.</li>
-</ul>
+</div>
 
 
-<p>Some of the disadvantages can be mitigated by using fiber (ruby fibers, node fibers), will cover Fibers in another blog.</p>
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Venkatesh CM</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+
+<time datetime="2014-04-08T00:00:00+05:30" data-updated="true">08 April, 2014</time>
+      
+
+
+    </p>
+    <p class="meta">
+      
+        
+          <a class="basic-alignment left" href="/2014/04/Reactor-Pattern-Part-1-Non-blocking-I-O/" title="Next Post: Reactor Pattern Part 1 - Applications with Blocking I/O">&larr;<span class="hide-mobile">&nbsp;Reactor Pattern Part 1 - Applications with Blocking I/O</span></a>
+        
+        
+          <a class="basic-alignment right" href="/2014/04/restful-web-services/" title="Previous Post: Restful Web Services"><span class="hide-mobile">Restful Web Services&nbsp;</span>&rarr;</a>
+        
+      
+    </p>
+  </footer>
+	
+</article>
 
   </div>
   <footer role="contentinfo">

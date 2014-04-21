@@ -74,6 +74,14 @@
       <a tabindex="-1" href="/2014/04/Reactor-Pattern-Part-1-Non-blocking-I-O/">Reactor Pattern Part 1 &hellip;</a>
     </li>
     
+    <li data-index="silver bullet solution  ">
+      <a tabindex="-1" href="/2014/04/silver-bullet-solution/">Silver Bullet Solution</a>
+    </li>
+    
+    <li data-index="restful web services  ">
+      <a tabindex="-1" href="/2014/04/restful-web-services/">Restful Web Services</a>
+    </li>
+    
   </ul>
   
 </form>
@@ -120,7 +128,7 @@
   </header>
 
 
-<div class="entry-content lettrine"><p>I call it Zen of Software Design.. instead of <a href="http://legacy.python.org/dev/peps/pep-0020/">Zen of Python</a> which is presented at the bottom of this blog for reference and below is my interpretations and thoughts on it</p>
+<div class="entry-content lettrine"><p>I call it Zen of Software Design.. instead of <a href="http://legacy.python.org/dev/peps/pep-0020/">Zen of Python</a> since it applies to all of software design and not only to python. The poem itself is presented at the bottom of this blog for reference and below is my interpretations and thoughts on it.</p>
 
 <p>Lines 1 to 9 of <a href="http://legacy.python.org/dev/peps/pep-0020/">Zen of Python</a> is covered in this blog, Lines 10 to 19 will be covered in Part 2.</p>
 
@@ -136,25 +144,25 @@
 
 <p><b><i>Beautiful is better than ugly</i></b></p>
 
-<p>While it is easy to understand that beautiful is better than ugly, it is very subjective to know what is beautiful and what is ugly. If you look at source code as an art, like a painting, bad code/design will stink (<a href="http://en.wikipedia.org/wiki/Code_smell">code-smell</a>) and makes you feel uncomfortable instinctively. I don&rsquo;t think there is standard rules by which you can differentiate beautiful from ugly design similar to good/bad paintings. I guess it comes from looking at different codebase and experience.</p>
+<p>While it is easy to understand that beautiful is better than ugly, it is very subjective to know beautiful from ugly. If you look at source code as an art, like a painting, bad code/design will stink (<a href="http://en.wikipedia.org/wiki/Code_smell">code-smell</a>) and make you  uncomfortable instinctively. I don&rsquo;t think there are standard rules by which you can differentiate beautiful from ugly design similar to paintings. I guess it comes from looking at different codebase and experience.</p>
 
 <br/>
 
 
 <p><b><i>Explicit is better than implicit.</i></b></p>
 
-<p>It should be obvious to figure-out what&rsquo;s happening while looking at the code, for someone not familiar with the codebase. Usually implicit is looks like magic which happens without any clue how it is working. There are two kind of implicits we face in day-to-day work.</p>
+<p>It should be obvious to figure-out what&rsquo;s happening in code, for someone not familiar with the codebase. Usually implicit design makes it look like bloack magic without any clue how it is working or where to look for related code. There are two kind of implicits we face in day-to-day work.</p>
 
 <ul>
-<li>Well known implicits :&ndash; Things which are well documented and have become standard way of doing things. These implicits usually go across project team boundaries. Example : SpringMVC annotations, Rails conventions</li>
-<li>Project implicits :&ndash; Things which project teams builds within the project which is not something a new developer would be acquainted with in other projects.</li>
+<li><p>Well known implicits :&ndash; Things which are well documented and have become standard way of doing things. These implicits usually go across project team boundaries. Example : SpringMVC annotations, Rails conventions</p></li>
+<li><p>Project implicits :&ndash; Things which project teams builds within the project which is not something a new developer would be acquainted with in other projects.</p></li>
 </ul>
 
 
 <br>
 
 
-<p>I have seen developers going overboard with Annotations or conventions in projects, where it is difficult to figure-out how things work. A rule of thumb I use to figure out if we have gone overboard is by asking myself the question &ldquo;Can I explain, to a new developer joining team, all the implicit things happening in the project within 1 hour session ?&rdquo;.</p>
+<p>I have seen developers going overboard with Annotations or conventions in projects, where it is difficult to figure-out how things work. A rule of thumb I use to figure out if we have gone overboard is by asking myself the question &ldquo;Can I explain, to a new developer joining team, all the implicit things happening in the project within 1 hour session?&rdquo;.</p>
 
 <br/>
 
@@ -163,19 +171,19 @@
 
 <p>Again this seems very obvious but still elusive. No one wants to create a complex system but creating simple design/software is a complex job.</p>
 
-<p>Few things which help me be on track of simplicity while looking at the code</p>
+<p>Few questions which help me be on track of simplicity</p>
 
 <ul>
-<li><p>How many execution flows/paths exists ?.</p>
+<li><p>How many execution flows/paths exists?</p>
 
 <p>if there are few execution paths than its easy to keep them in mind and figure out a specific scenario falls in which one of the paths.</p></li>
-<li><p>How easy is it to figure-out a given scenario falls under which execution path ?.</p>
+<li><p>How easy is it to figure-out a given scenario falls under which execution path?</p>
 
 <p>It should be easy to figure that out, if the application is well designed and simple to remember.</p></li>
-<li><p>How many exceptions to the conventional flows exist ?.</p>
+<li><p>How many exceptions flows exist as against conventional flows?</p>
 
 <p>In every application there are few exceptional scenarios which don&rsquo;t fall under normal execution paths and need exceptional flows for them. These should be minimal and explicitly identified.</p></li>
-<li><p>How easy it is to explain high level design to a new developer ?.</p>
+<li><p>How easy it is to explain high level design to a new developer?</p>
 
 <p>I found this rule of thumb to be very helpful. It becomes obvious when you explain (or imagining to explain) how application works to a new developer. If you can explain it without flinching several times when the developer says &ldquo;ah in scenario x app will do this&rdquo; and you go hmmm its mostly correct but there are some other issues etc.</p></li>
 </ul>
@@ -206,7 +214,7 @@
 <p>When we look at code there are few obvious cases where this is true. For example it is better to have several flat functions than having one long nested function. For example :&ndash; Using Strategy Design Pattern or Command Design pattern to separate code into independent units. Where it is not very obvious and still useful to think is</p>
 
 <ul>
-<li>How many layers are we introducing in software architecture ?</li>
+<li>How many layers are we introducing in software architecture?</li>
 <li>How many jumps do we need to make to get to the final value (may be cached value or database lookup) ?</li>
 <li>Is the path of execution intermingled and can not be modified independently?</li>
 </ul>
