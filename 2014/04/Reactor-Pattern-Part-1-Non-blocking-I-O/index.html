@@ -156,9 +156,13 @@
 
 <p><img class="article-img" border="0" height="325" width="480" src="/img/blog/ThreeThreads.png" class="" style="display: inline-block;"></p>
 
-<p>As shown in the above diagram, we can notice two issues
-*   OS switches CPU from an application which needs CPU for processing.
-*   OS switches CPU to an application which is still waiting for IO.</p>
+<p>As shown in the above diagram, we can notice two issues</p>
+
+<ul>
+<li>OS switches CPU from an application which needs CPU for processing.</li>
+<li>OS switches CPU to an application which is still waiting for IO.</li>
+</ul>
+
 
 <p>These two issues are due to pre-emptive thread switching. To achieve optimal CPU allocation, application should be able to request for CPU time or give-up CPU time in a cooperative manner instead of pre-emptive switching.</p>
 
