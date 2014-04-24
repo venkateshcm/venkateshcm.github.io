@@ -4,7 +4,7 @@
   <title><![CDATA[Venkatesh CM]]></title>
   <link href="http://venkateshcm.github.io/atom.xml" rel="self"/>
   <link href="http://venkateshcm.github.io/"/>
-  <updated>2014-04-24T08:00:24+05:30</updated>
+  <updated>2014-04-24T15:31:00+05:30</updated>
   <id>http://venkateshcm.github.io/</id>
   <author>
     <name><![CDATA[Venkatesh CM]]></name>
@@ -12,6 +12,254 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Reactor Pattern Part 3 - Promises to solve callback hell]]></title>
+    <link href="http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-3-Promises-to-solve-callback-hell/"/>
+    <updated>2014-04-23T00:00:00+05:30</updated>
+    <id>http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-3-Promises-to-solve-callback-hell</id>
+    <content type="html"><![CDATA[<p>In <a href="http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-1-Non-blocking-I-O/">Reactor Pattern Part 1 : Applications with Blocking I/O</a>, I went through issues faced a scenario of single threaded application trying to maximise CPU usage and the corresponding issues it introduces. In <a href="http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-2-Non-blocking-I-O/">Reactor Pattern Part 2 : Applications with Blocking I/O</a> I went through what Reactor Pattern is and how it fixes the Blocking IO issues and mentioned call back issue that async code introduces.</p>
+
+<p>Lets get little more detail on what the callback issues are and introduce few options or libraries used to partially solve the issue, in this blog.</p>
+
+<p><b><i>Example scenario</i></b></p>
+
+<p>Consider a simple scenario where Restful service has to return a list of events for a given user. User is identified by Facebook Id. The service datastore has two tables or collections, (a) User table and (b) Event table which stores.</p>
+
+<ul>
+<li><p>user information</p>
+
+<ul>
+<li>id</li>
+<li>fb_id</li>
+<li>name</li>
+<li>&hellip;.</li>
+</ul>
+</li>
+<li><p>events information.</p>
+
+<ul>
+<li>id</li>
+<li>user_id</li>
+<li>event_name</li>
+<li>event_desc</li>
+<li>start_date</li>
+<li>&hellip;.</li>
+</ul>
+</li>
+</ul>
+
+
+<p>Assuming, you are not allowed to join user and event table or datastore is mongodb. The service controller will use below Pseudocode steps to get events.</p>
+
+<ul>
+<li>Given facebook id, get user id from User collection</li>
+<li>Given user id, get events for the user from  events collection.</li>
+</ul>
+
+
+<p><b><i>Sequential Code with Blocking I/O</i></b></p>
+
+<p>In normal scenario the above steps directly translate to below code. If performance or scalability is not something playing on developers mind, Sequential code is the simplest and normal thing to do.</p>
+
+<figure class='code'><figcaption><span>Sequential Code With Blocking I/O </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">function</span> <span class="nx">getUserEvents</span><span class="p">(</span><span class="nx">request</span><span class="p">,</span><span class="nx">response</span><span class="p">){</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">facebook_id</span> <span class="o">=</span> <span class="nx">request</span><span class="p">.</span><span class="nx">param</span><span class="p">(</span><span class="s1">&#39;facebook_id&#39;</span><span class="p">);</span>
+</span><span class='line'>  <span class="k">try</span><span class="p">{</span>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">user</span> <span class="o">=</span> <span class="nx">db</span><span class="p">.</span><span class="nx">users</span><span class="p">.</span><span class="nx">findOne</span><span class="p">({</span><span class="nx">fb_id</span><span class="o">:</span><span class="nx">facebook_id</span><span class="p">});</span>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">events</span> <span class="o">=</span> <span class="nx">db</span><span class="p">.</span><span class="nx">events</span><span class="p">.</span><span class="nx">find</span><span class="p">({</span><span class="nx">user_id</span><span class="o">:</span><span class="nx">user</span><span class="p">.</span><span class="nx">id</span><span class="p">});</span>
+</span><span class='line'>      <span class="nx">response</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="nx">events</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span><span class="k">catch</span><span class="p">(</span><span class="nx">err</span><span class="p">){</span>
+</span><span class='line'>      <span class="nx">response</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">500</span><span class="p">).</span><span class="nx">send</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>There are religious wars between Ruby on Rails and NodeJS developers on Sequential Vs Evented style code.</p>
+
+<ul>
+<li>Key Points
+
+<ul>
+<li>Majority of web applications (Ruby on Rails, Java Spring, Django etc) are written in sequential style.</li>
+<li>Sequential style is simple and readable.</li>
+<li>Most people think in sequential style i.e. Developers tend to break application logic into sequential steps like Pseudocode provided above.</li>
+<li>Boundaries of Pseudocode Step does not usually end at network call or IO call.</li>
+<li>Non-blocking I/O is considered when we need better scalabilty or performance.</li>
+</ul>
+</li>
+</ul>
+
+
+<p>Unfortunately Sequential code is linked to blocking I/O calls, becuase threads follow pre-emptive multitasking and not co-operative multitaking. More on this later when talking about Fibers.</p>
+
+<p><b><i>Callback based solution</i></b></p>
+
+<p>To solve Blocking I/O problem, code is split to three parts</p>
+
+<ol>
+<li>Processing done before making a network or IO call</li>
+<li>Network or IO call</li>
+<li>Processing done after getting back data from network or IO call.</li>
+</ol>
+
+
+<p>Execution flow for each of above steps is seperated and such that each of them can be executed from the event loop.</p>
+
+<figure class='code'><figcaption><span>Non Blocking I/O with Call backs </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">function</span> <span class="nx">getUserEvents</span><span class="p">(</span><span class="nx">request</span><span class="p">,</span><span class="nx">response</span><span class="p">){</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">returnEvents</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span><span class="nx">events</span><span class="p">){</span>
+</span><span class='line'>          <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="nx">respone</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">500</span><span class="p">).</span><span class="nx">send</span><span class="p">(</span><span class="nx">err</span><span class="p">);;</span>
+</span><span class='line'>          <span class="nx">response</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="nx">events</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">});</span>  
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">givenUserFindAndReturnEvents</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span><span class="nx">user</span><span class="p">){</span>
+</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="nx">respone</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">500</span><span class="p">).</span><span class="nx">send</span><span class="p">(</span><span class="nx">err</span><span class="p">);;</span>
+</span><span class='line'>      <span class="nx">db</span><span class="p">.</span><span class="nx">events</span><span class="p">.</span><span class="nx">find</span><span class="p">({</span><span class="nx">user_id</span><span class="o">:</span><span class="nx">user</span><span class="p">.</span><span class="nx">id</span><span class="p">},</span><span class="nx">returnEvents</span><span class="p">);</span>    
+</span><span class='line'>  <span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">findUserAndReturnEvents</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>      <span class="kd">var</span> <span class="nx">facebook_id</span> <span class="o">=</span> <span class="nx">request</span><span class="p">.</span><span class="nx">param</span><span class="p">(</span><span class="s1">&#39;facebook_id&#39;</span><span class="p">);</span>
+</span><span class='line'>      <span class="nx">db</span><span class="p">.</span><span class="nx">users</span><span class="p">.</span><span class="nx">findOne</span><span class="p">({</span><span class="nx">fb_id</span><span class="o">:</span><span class="nx">facebook_id</span><span class="p">},</span> <span class="nx">givenUserFindAndReturnEvents</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">findUserAndReturnEvents</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Notice that request and response objects are not passed to sub-functions. The sub-functions get access request and response since sub-functions are <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Closures">javascript closures</a>. In fact if we move the sub-functions out-side getUserEvents method, it would not work. Which lead to chooice of keeping <i>givenUserFindAndReturnEvents</i> and <i>returnEvents</i> as sub-functions. <a href="http://en.wikipedia.org/wiki/Currying">Curring</a> can be used to fix this problem, more on that in another blog.</p>
+
+<p>Each of the sub-functions (<i>findUserAndReturnEvents</i>, <i>givenUserFindAndReturnEvents</i>, <i>returnEvents</i>) are executed asynchronously. functions <i>givenUserFindAndReturnEvents</i> and <i>returnEvents</i> are called call-back functions since they are triggered after getting back user object and event objects respectively from datastore.</p>
+
+<p>The sub-functions could have been left as in-line or nested lamda functions. Nesting several such functions is another issue with call-backs.</p>
+
+<ul>
+<li>Key Points
+
+<ul>
+<li>Code is separated based on pre-network call and post network call.</li>
+<li>The caller of the sub-function has to pass a callback function to execute after finishing sub-function task.</li>
+<li>Sequential logic is expressed asynchronously.</li>
+<li>Asynchronous code above is more scalable but may not be more performant (response time).</li>
+<li>Call-back causes readability issues &ndash; callback hell.</li>
+<li>Following execution flow is difficult, so called spaghetti-code.</li>
+<li>Non-Blocking API&rsquo;s impose major constrain on how you structure your code.</li>
+<li>Functions are hierarchy, i.e. calling function is responsible for functionality it provides as-well as the sub-function it calls. For example:&ndash; givenUserFindAndReturnEvents includes functionality of finding and returning Events to http response.</li>
+</ul>
+</li>
+</ul>
+
+
+<p><b><i>Promise based solution</i></b></p>
+
+<p>To solve Call-back issues like spaghetti-code, we could use code structuring library like <a href="http://documentup.com/kriskowal/q/">q promise</a>. Promise library provides some code style standards and structuring, making it more readable compared to call-back based code shown above.</p>
+
+<figure class='code'><figcaption><span>Non Blocking I/O with Promises </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">loadEventsForUser</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span><span class="nx">user</span><span class="p">){</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">db</span><span class="p">.</span><span class="nx">events</span><span class="p">.</span><span class="nx">find</span><span class="p">({</span><span class="nx">user_id</span><span class="o">:</span><span class="nx">user</span><span class="p">.</span><span class="nx">id</span><span class="p">},</span><span class="nx">returnEvents</span><span class="p">);</span>  
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">findUser</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">facebook_id</span> <span class="o">=</span> <span class="nx">request</span><span class="p">.</span><span class="nx">param</span><span class="p">(</span><span class="s1">&#39;facebook_id&#39;</span><span class="p">);</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">db</span><span class="p">.</span><span class="nx">users</span><span class="p">.</span><span class="nx">findOne</span><span class="p">({</span><span class="nx">fb_id</span><span class="o">:</span><span class="nx">facebook_id</span><span class="p">},</span> <span class="nx">loadUser</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">getUserEvents</span><span class="p">(</span><span class="nx">request</span><span class="p">,</span><span class="nx">response</span><span class="p">){</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">success</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">events</span><span class="p">){</span>
+</span><span class='line'>          <span class="nx">response</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="nx">events</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">error</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">){</span>
+</span><span class='line'>      <span class="nx">response</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">500</span><span class="p">).</span><span class="nx">send</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">findUser</span><span class="p">()</span>
+</span><span class='line'>  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">loadEventsForUser</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">success</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">.</span><span class="nx">fail</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Notice how code is split into smaller independent functions and how they are chained together using <i>.then</i> and <i>.fail</i> functions. Another important feature of promise library is how exception flow is handled. Compare promise based code with the call back based one above. Observe that errors are handled in each of the call back functions and when using promise, errors are isolated and handle seperately.</p>
+
+<ul>
+<li>Key Points
+
+<ul>
+<li>Functions are flat, i.e. calling function is responsible for only its own functionality and can be used independently. For example :&ndash; findUser can be used independent of loadEventsForUser.</li>
+<li>Spliting sequential code into indenpendent functions which are reusable in multiple scenarios is not always easy. Many times functions are created just to work around Non-blocking reactive pattern.</li>
+<li>Functions can be used in other flows and could form reusable components.</li>
+<li>Better readability compared to call back option but not as simpile as sequential option</li>
+<li>Better exception handling compared to call back option but not as simple as sequential option.</li>
+<li>When libraries don&rsquo;t support promises, we end up writing boiler plat code to create promise and to handle async flows.</li>
+</ul>
+</li>
+</ul>
+
+
+<p><b><i>Conclusion</i></b></p>
+
+<p>Async or Non-blocking IO introduces new challenges on how applications needs to be structured and how async call backs can be abstracted away using promises like library. Other thing to keep in mind on how we got to this point. i.e. Sequencial blocking IO based applications are not scalable. So the asynconous code is a nessesary evil and not something that is desired by itself.</p>
+
+<p>Finally, assumption that Non-blocking IO and Asynconous code are clubed together and one comes with other. Is it possible to get the best of both the worlds, i.e. Sequential code and Non-Blocking IO scalability. In fact, I think there is an option based on Fibers which can provide best of both the worlds. I will cover Fibers and how they achive both Non-Blocking IO and Sequential codebase in the next blog.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Zen of Software Design - Part 1]]></title>
@@ -186,7 +434,7 @@ The Zen of Python, by Tim Peters
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Reactor Pattern Part 2 - Applications with Blocking I/O]]></title>
+    <title type="html"><![CDATA[Reactor Pattern Part 2 - Applications with Non-Blocking I/O]]></title>
     <link href="http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-2-Non-blocking-I-O/"/>
     <updated>2014-04-10T00:00:00+05:30</updated>
     <id>http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-2-Non-blocking-I-O</id>
@@ -241,6 +489,13 @@ The Zen of Python, by Tim Peters
 <li>Can scale above C10K limit</li>
 </ul>
 
+
+<br/>
+
+
+<p><b><i>C10K Problem</i></b></p>
+
+<p>Historically, Reactor Pattern came into prominence after <a href="http://en.wikipedia.org/wiki/C10k_problem">C10K problem</a> and <a href="http://www.kegel.com/c10k.html">Solution to C10K problem</a> using Non-Blocking I/O succeeded.</p>
 
 <br/>
 
