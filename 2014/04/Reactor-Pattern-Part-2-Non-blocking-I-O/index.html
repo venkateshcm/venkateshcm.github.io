@@ -9,7 +9,7 @@
   <meta name="author" content="Venkatesh CM">
 
   
-  <meta name="description" content="In Reactor Pattern Part 1 : Applications with Blocking I/O, we had gone through a scenario of single threaded applications to maximise CPU usage and &hellip;">
+  <meta name="description" content="In Reactor Pattern Part 1 : Applications with Blocking I/O, I went through issues faced by a single threaded application to scale to handle more &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -31,19 +31,16 @@
         <link rel="stylesheet" href="/fonts/Serif-Slanted/cmun-serif-slanted.css">
 
 
-  
-  <script type="text/javascript">
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-49867190-1']);
-    _gaq.push(['_trackPageview']);
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-    (function() {
-      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
-  </script>
+  ga('create', 'UA-49867190-1', 'venkateshcm.com');
+  ga('send', 'pageview');
 
+</script>
 
 </head>
 
@@ -107,7 +104,7 @@
   </header>
 
 
-<div class="entry-content"><p>In <a href="http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-1-Non-blocking-I-O/">Reactor Pattern Part 1 : Applications with Blocking I/O</a>, we had gone through a scenario of single threaded applications to maximise CPU usage and the corresponding issues we faced.</p>
+<div class="entry-content"><p>In <a href="http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-1-Non-blocking-I-O/">Reactor Pattern Part 1 : Applications with Blocking I/O</a>, I went through issues faced by a single threaded application to scale to handle more requests pre box.</p>
 
 <p>In this blog, we will look at an alternative solution to maximise CPU usage.</p>
 
@@ -239,6 +236,18 @@
   Copyright &copy; 2014 - Venkatesh CM
 </p>
 
+<!-- Start of StatCounter Code for Blogger / Blogspot -->
+<script type='text/javascript'>
+//<![CDATA[
+var sc_project=9737354; 
+var sc_invisible=0; 
+var sc_security="f75f3962"; 
+var scJsHost = (("https:" == document.location.protocol) ? "https://secure." : "http://www.");
+document.write("<sc"+"ript type='text/javascript' src='" + scJsHost+ "statcounter.com/counter/counter_xhtml.js'></"+"script>");
+//]]>
+</script>
+<noscript><div class='statcounter'><a class='statcounter' href='http://statcounter.com/blogger/' title='blogspot visit counter'><img alt='blogspot visit counter' class='statcounter' src='http://c.statcounter.com/9737354/0/f75f3962/0/'/></a></div></noscript>
+<!-- End of StatCounter Code for Blogger / Blogspot -->
 </footer>
   
 
