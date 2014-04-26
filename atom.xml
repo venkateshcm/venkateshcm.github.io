@@ -4,7 +4,7 @@
   <title><![CDATA[Venkatesh CM]]></title>
   <link href="http://venkateshcm.github.io/atom.xml" rel="self"/>
   <link href="http://venkateshcm.github.io/"/>
-  <updated>2014-04-26T10:52:16+05:30</updated>
+  <updated>2014-04-26T12:03:40+05:30</updated>
   <id>http://venkateshcm.github.io/</id>
   <author>
     <name><![CDATA[Venkatesh CM]]></name>
@@ -12,6 +12,498 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Reactor Pattern Part 4 - Write Sequential Non-Blocking IO Code With Fibers in NodeJS]]></title>
+    <link href="http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-4-Write-Sequential-Non-Blocking-IO-Code-With-Fibers-In-NodeJS/"/>
+    <updated>2014-04-26T00:00:00+05:30</updated>
+    <id>http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-4-Write-Sequential-Non-Blocking-IO-Code-With-Fibers-In-NodeJS</id>
+    <content type="html"><![CDATA[<p>This is the final part of 4 part Reactor Pattern series. In <a href="http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-1-Non-blocking-I-O/">Reactor Pattern Part 1 : Applications with Blocking I/O</a>, I went through issues faced by a single threaded application to scale to handle more requests pre box and the corresponding issues. In <a href="http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-2-Non-blocking-I-O/">Reactor Pattern Part 2 : Applications with Non-Blocking I/O</a> I went through what Reactor Pattern is and how it solved the Blocking IO issues and mentioned call back issue due to async code. <a href="http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-3-Promises-to-solve-callback-hell/">Reactor Pattern Part 3 &ndash; Promises to solve callback hell</a> talked about callback code issues in detail and how promise library can solve some of the issues.</p>
+
+<p><b><i>Recap &ndash; Part 3 Conclusion</i></b></p>
+
+<p>Async or Non-blocking IO introduces new challenges on how applications should to be structured and how async call backs can be abstracted away using promises like library. We need Non-blocking IO application since, sequencial blocking IO applications are not scalable. So Non-Blocking IO or Asynchronous code is not a desired feature but a nessesary evil to achive scalability.</p>
+
+<p>Finally, we should question assumption that Non-blocking IO and Asynchronous code are clubed together and one comes with other. Is it possible to get the best of both the worlds, i.e. Sequential code and Non-Blocking IO scalability. In fact, I think there is an option based on Fibers which can provide best of both the worlds.</p>
+
+<p>I will cover Fibers and how they achive both Non-Blocking IO and Sequential codebase and demonstrate it with an expressjs resfull service in the this blog.</p>
+
+<p>Pre-emptive and co-operative multitasking is a good place to begin understanding Fibers.</p>
+
+<p><b><i>Pre-emptive Multitasking and Co-Operative Multitasking</i></b></p>
+
+<p><a href="http://en.wikipedia.org/wiki/Pre-emptive_multitasking">Pre-emptive Multitasking</a> :&ndash;</p>
+
+<p><i>In computing, preemption is the act of temporarily interrupting a task being carried out by a computer system, without requiring its cooperation, and with the intention of resuming the task at a later time. Such a change is known as a context switch. It is normally carried out by a privileged task or part of the system known as a preemptive scheduler, which has the power to preempt, or interrupt, and later resume, other tasks in the system. &ndash; from Wikipedia</i></p>
+
+<p> Linux Scheduler (privileged task) pre-empts process tasks without its co-operation. The disadvantage of preemptive multitasking is that the OS may make a context switch at an inappropriate time.</p>
+
+<p><a href="http://en.wikipedia.org/wiki/Computer_multitasking#Cooperative_multitasking.2Ftime-sharing">Co-Operative Multitasking</a> :&ndash;</p>
+
+<p><i>Early multitasking systems used applications that voluntarily ceded time to one another. This approach, which was eventually supported by many computer operating systems, is known today as cooperative multitasking. &ndash; from Wikipedia</i></p>
+
+<p>Co-Operative Multitasking relies on the threads relinquishing control once they are at a stopping point. The disadvantage of co-operative multitasking is that a poorly written application can blocking the entire system. Real-time embedded systems are often implemented using Co-Operative Multitasking paradigm to get real time performance.</p>
+
+<p><b><i>What are Fibers?</i></b></p>
+
+<p>Fibers are lightweight threads (also called green threads) which are process or application level concepts and don&rsquo;t correspond to OS threads. They provide thread like execution flow. While OS threads are pre-emtively scheduled, programmer can use fibers to co-opratively multitask. Fibers are conceptually similar to <a href="http://en.wikipedia.org/wiki/Coroutine">coroutines</a> .i.e. execution can be suspended and resumed programmatically.</p>
+
+<p>Lets see an example of how fibers work</p>
+
+<figure class='code'><figcaption><span>Simple Example Fibers - fibersExample.js </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">Fiber</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;fibers&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">log_sequence_counter</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">sleep</span><span class="p">(</span><span class="nx">task</span><span class="p">,</span> <span class="nx">milliseconds</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">fiber</span> <span class="o">=</span> <span class="nx">Fiber</span><span class="p">.</span><span class="nx">current</span><span class="p">;</span>
+</span><span class='line'>    <span class="nx">setTimeout</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">log_sequence_counter</span><span class="o">++</span> <span class="o">+</span> <span class="nx">task</span> <span class="o">+</span> <span class="s1">&#39; callback&#39;</span><span class="p">);</span>
+</span><span class='line'>        <span class="nx">fiber</span><span class="p">.</span><span class="nx">run</span><span class="p">();</span>
+</span><span class='line'>    <span class="p">},</span> <span class="nx">milliseconds</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">log_sequence_counter</span><span class="o">++</span> <span class="o">+</span> <span class="nx">task</span> <span class="o">+</span> <span class="s1">&#39; thread/fiber suspended&#39;</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">Fiber</span><span class="p">.</span><span class="nx">yield</span><span class="p">();</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">log_sequence_counter</span><span class="o">++</span> <span class="o">+</span> <span class="nx">task</span> <span class="o">+</span> <span class="s1">&#39; thread/fiber resumed&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">task1</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">log_sequence_counter</span><span class="o">++</span> <span class="o">+</span> <span class="s1">&#39; task 1 waiting for sleep to end &#39;</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">sleep</span><span class="p">(</span><span class="s2">&quot; task 1&quot;</span><span class="p">,</span><span class="mi">1000</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">log_sequence_counter</span><span class="o">++</span> <span class="o">+</span> <span class="s1">&#39; task 1 got back from sleep&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">task2</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">log_sequence_counter</span><span class="o">++</span> <span class="o">+</span> <span class="s1">&#39; task 2 waiting for sleep to end &#39;</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">sleep</span><span class="p">(</span><span class="s2">&quot; task 2&quot;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">log_sequence_counter</span><span class="o">++</span> <span class="o">+</span> <span class="s1">&#39; task 2 got back from sleep&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">Fiber</span><span class="p">(</span><span class="nx">task1</span><span class="p">).</span><span class="nx">run</span><span class="p">();</span>
+</span><span class='line'><span class="nx">Fiber</span><span class="p">(</span><span class="nx">task2</span><span class="p">).</span><span class="nx">run</span><span class="p">();</span>
+</span><span class='line'><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span> <span class="nx">log_sequence_counter</span><span class="o">++</span> <span class="o">+</span> <span class="s1">&#39; main execution flow&#39;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>In the above example, you can notice that</p>
+
+<ul>
+<li>Fibers are created using Fiber() function and the task function is executed using run method.</li>
+<li>Pattern used to suspend and resume a Fiber. This pattern will be reused while making Non-Blocking IO calls.</li>
+<li>Within a fiber thread Fiber.current returns current executing fiber.</li>
+<li>Fiber.yield suspends execution of current thread i.e. voluntarily relinquishs control. In other words it allows another fiber thread execute co-operatively.</li>
+<li><i>task1</i> and <i>task2</i> functions don&rsquo;t have callbacks or promises and is sequencial code.</li>
+<li><i>task1</i> and <i>task2</i> functions don&rsquo;t know about fibers and developers can read/write these functions as sequential code.</li>
+<li>Fibers provide co-operative multi-tasking capability</li>
+</ul>
+
+
+<figure class='code'><figcaption><span>output of fibersExample.js </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>node fibersExample.js
+</span><span class='line'>1 task 1 waiting <span class="k">for </span>sleep to end
+</span><span class='line'>2 task 1 thread/fiber suspended
+</span><span class='line'>3 task 2 waiting <span class="k">for </span>sleep to end
+</span><span class='line'>4 task 2 thread/fiber suspended
+</span><span class='line'>5 main execution flow
+</span><span class='line'>6 task 1 callback
+</span><span class='line'>7 task 1 thread/fiber resumed
+</span><span class='line'>8 task 1 got back from sleep
+</span><span class='line'>9 task 2 callback
+</span><span class='line'>10 task 2 thread/fiber resumed
+</span><span class='line'>11 task 2 got back from sleep
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The output of fibersExample.js shows the other of execution with sequence numbers. Even though NodeJS is single threaded application, the above code demonstrates &ndash; how multiple tasks are run with-out blocking each other.</p>
+
+<p><b><i>Fibers &ndash; In ExpressJS Restfull Service</i></b></p>
+
+<p>Lets look at an ExpressJS restfull service example, to keep code simple, I have not included exception handling which can be done using try &ndash; catch blocks as we do other languages. It provides three service methods</p>
+
+<ol>
+<li><b>/google</b> :&ndash; Makes a http get call to google and returns html response from google to client.</li>
+<li><b>/user/:fb_id</b> :&ndash; Return User JSON for given facebook id.</li>
+<li><b>/user/:fb_id/events</b> :&ndash; Returns User and User&rsquo;s Events for a given facebook id.</li>
+</ol>
+
+
+<figure class='code'><figcaption><span>output of server.js </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">express</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;express&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">fibersMiddleWare</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;./fib-middleware&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">request</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">&quot;./fib-request&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">fib_redis</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">&quot;./fib-redis&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">redis_client</span> <span class="o">=</span> <span class="nx">fib_redis</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span><span class="nx">require</span><span class="p">(</span><span class="s2">&quot;redis-url&quot;</span><span class="p">).</span><span class="nx">connect</span><span class="p">());</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/*------------------------------------Models----------------------------------*/</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">User</span> <span class="o">=</span> <span class="p">{};</span>
+</span><span class='line'><span class="nx">User</span><span class="p">.</span><span class="nx">get</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">id</span><span class="p">){</span>
+</span><span class='line'>              <span class="kd">var</span> <span class="nx">user_json</span> <span class="o">=</span> <span class="nx">redis_client</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s2">&quot;user:&quot;</span> <span class="o">+</span> <span class="nx">id</span><span class="p">);</span>
+</span><span class='line'>              <span class="k">return</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">user_json</span><span class="p">);</span>
+</span><span class='line'>          <span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">Event</span> <span class="o">=</span> <span class="p">{};</span>
+</span><span class='line'><span class="nx">Event</span><span class="p">.</span><span class="nx">getUserEvents</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">user_id</span><span class="p">){</span>
+</span><span class='line'>                        <span class="kd">var</span> <span class="nx">user_json</span> <span class="o">=</span> <span class="nx">redis_client</span><span class="p">.</span><span class="nx">mget</span><span class="p">(</span><span class="s2">&quot;user:&quot;</span> <span class="o">+</span> <span class="nx">id</span> <span class="o">+</span> <span class="s2">&quot;:events&quot;</span><span class="p">);</span>
+</span><span class='line'>                        <span class="k">return</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">user_json</span><span class="p">);</span>
+</span><span class='line'>                    <span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/*----------------------------------------------------------------------------*/</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">app</span> <span class="o">=</span> <span class="nx">express</span><span class="p">();</span>
+</span><span class='line'><span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">fibersMiddleWare</span><span class="p">.</span><span class="nx">runInFiber</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">app</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;/google&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">){</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">google_response_body</span> <span class="o">=</span> <span class="nx">request</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;http://google.com&#39;</span><span class="p">)</span>
+</span><span class='line'>  <span class="nx">res</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">google_response_body</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">app</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;/users/:fb_id&#39;</span><span class="p">,</span><span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">){</span>
+</span><span class='line'>                  <span class="kd">var</span> <span class="nx">user</span> <span class="o">=</span> <span class="nx">User</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">fb_id</span><span class="p">)</span>
+</span><span class='line'>                  <span class="nx">res</span><span class="p">.</span><span class="nx">setHeader</span><span class="p">(</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">,</span> <span class="s1">&#39;application/json&#39;</span><span class="p">);</span>
+</span><span class='line'>                  <span class="nx">res</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">user</span><span class="p">));</span>
+</span><span class='line'>                <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">app</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;/users/:fb_id/events&#39;</span><span class="p">,</span><span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">){</span>
+</span><span class='line'>                  <span class="kd">var</span> <span class="nx">user</span> <span class="o">=</span> <span class="nx">User</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">fb_id</span><span class="p">)</span>
+</span><span class='line'>                  <span class="kd">var</span> <span class="nx">events</span> <span class="o">=</span> <span class="nx">Event</span><span class="p">.</span><span class="nx">getUserEvents</span><span class="p">(</span><span class="nx">user</span><span class="p">.</span><span class="nx">id</span><span class="p">);</span>
+</span><span class='line'>                  <span class="kd">var</span> <span class="nx">response</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;user&#39;</span> <span class="o">:</span> <span class="nx">user</span><span class="p">,</span> <span class="s1">&#39;events&#39;</span> <span class="o">:</span> <span class="nx">events</span><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'>                  <span class="nx">res</span><span class="p">.</span><span class="nx">setHeader</span><span class="p">(</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">,</span> <span class="s1">&#39;application/json&#39;</span><span class="p">);</span>
+</span><span class='line'>                  <span class="nx">res</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">response</span><span class="p">));</span>
+</span><span class='line'>                <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">server</span> <span class="o">=</span> <span class="nx">app</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="mi">3000</span><span class="p">,</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;Listening on port %d&#39;</span><span class="p">,</span> <span class="nx">server</span><span class="p">.</span><span class="nx">address</span><span class="p">().</span><span class="nx">port</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>In the above example, we have used few custom/wrapper libraries <i>&lsquo;fib-middleware&rsquo;</i>, <i>&lsquo;fib-request&rsquo;</i> and <i>&lsquo;fib-redis&rsquo;</i>. They are simple extentions of simple fibers example above.</p>
+
+<p>You can notice that</p>
+
+<ul>
+<li>Fibers are setup as middleware using <i>app.use(fibersMiddleWare.runInFiber)</i></li>
+<li>Controller and Model methods are Synchronous and Sequencial Code.</li>
+<li>Http get Request and Datastore (redis_client) opterations are also Synchronous.</li>
+<li>Other than sequencial code there is nothing special happening with-in Server.js code above.</li>
+<li>Code demonstrates that Non-Blocking IO code can be synchronous and sequential</li>
+</ul>
+
+
+<p>Lets looks at the libraries that server.js depends on</p>
+
+<figure class='code'><figcaption><span>fib-middleware.js </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">Fiber</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">&quot;fibers&quot;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">fiberMiddleWare</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span><span class="nx">resp</span><span class="p">,</span><span class="nx">next</span><span class="p">){</span>
+</span><span class='line'>  <span class="nx">Fiber</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+</span><span class='line'>      <span class="nx">next</span><span class="p">();</span>
+</span><span class='line'>  <span class="p">}).</span><span class="nx">run</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">exports</span><span class="p">.</span><span class="nx">runInFiber</span> <span class="o">=</span> <span class="nx">fiberMiddleWare</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>ExpressJS middleware is an implementation intercepting filters pattern which can be used to perform any processing before and after passing the request to controller method.</p>
+
+<p>fib-middleware.js is a simple mechanism to process all http requests within a fiber context. It is similar to Fiber(task1).run() in the fibersExample.js above.</p>
+
+<p><b><i>Custom Wrapper Libraries to provide Fibers Support</i></b></p>
+
+<p><i>fib-request.js</i> and <i>fib-redis.js</i> are wrappers which provide Fibers support and are not required if orginal library (redis.js or request.js) support Fibers.</p>
+
+<figure class='code'><figcaption><span>fib-request.js </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">request</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;request&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">Fiber</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">&quot;fibers&quot;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">get</span><span class="p">(</span><span class="nx">url</span><span class="p">){</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">error</span><span class="p">,</span><span class="nx">response</span><span class="p">,</span><span class="nx">body</span><span class="p">;</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">fiber</span> <span class="o">=</span> <span class="nx">Fiber</span><span class="p">.</span><span class="nx">current</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">request</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">url</span><span class="p">,</span>
+</span><span class='line'>                    <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">resp</span><span class="p">,</span> <span class="nx">b</span><span class="p">){</span>
+</span><span class='line'>                      <span class="nx">error</span> <span class="o">=</span> <span class="nx">err</span><span class="p">;</span>
+</span><span class='line'>                      <span class="nx">response</span> <span class="o">=</span> <span class="nx">resp</span><span class="p">;</span>
+</span><span class='line'>                      <span class="nx">body</span> <span class="o">=</span> <span class="nx">b</span><span class="p">;</span>
+</span><span class='line'>                      <span class="nx">fiber</span><span class="p">.</span><span class="nx">run</span><span class="p">()</span>
+</span><span class='line'>                    <span class="p">});</span>
+</span><span class='line'>  <span class="nx">Fiber</span><span class="p">.</span><span class="nx">yield</span><span class="p">();</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">body</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">exports</span><span class="p">.</span><span class="nx">get</span> <span class="o">=</span> <span class="nx">get</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>fib-redis.js </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">Fiber</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;fibers&#39;</span><span class="p">);</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">conn</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">function</span> <span class="nx">get</span><span class="p">(</span><span class="nx">key</span><span class="p">){</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">error</span><span class="p">,</span> <span class="nx">value</span><span class="p">;</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">fiber</span> <span class="o">=</span> <span class="nx">Fiber</span><span class="p">.</span><span class="nx">current</span><span class="p">;</span>
+</span><span class='line'>  <span class="nx">conn</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">key</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span><span class="nx">val</span><span class="p">){</span>
+</span><span class='line'>      <span class="nx">error</span> <span class="o">=</span> <span class="nx">err</span><span class="p">;</span>
+</span><span class='line'>      <span class="nx">value</span> <span class="o">=</span> <span class="nx">val</span><span class="p">;</span>
+</span><span class='line'>      <span class="nx">fiber</span><span class="p">.</span><span class="nx">run</span><span class="p">();</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'>    <span class="nx">Fiber</span><span class="p">.</span><span class="nx">yield</span><span class="p">();</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">value</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="kd">function</span> <span class="nx">init</span><span class="p">(</span><span class="nx">connection</span><span class="p">){</span>
+</span><span class='line'>   <span class="nx">conn</span> <span class="o">=</span> <span class="nx">connection</span><span class="p">;</span>
+</span><span class='line'>   <span class="k">return</span> <span class="p">{</span> <span class="s1">&#39;get&#39;</span><span class="o">:</span><span class="nx">get</span><span class="p">};</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">exports</span><span class="p">.</span><span class="nx">init</span> <span class="o">=</span> <span class="nx">init</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>As you can see, <i>fib-request.js</i> and <i>fib-redis.js</i> follow code pattern similar to the fibers example of sleep where thread is suspended and resumed to make the function synchronous.</p>
+
+<p>The above sample ExpressJS application shows that it is possible to write sequential Non-Blocking I/O using Fibers. Though I have used NodeJS in the sample codebase. It is not restricted to NodeJS, the same applies to other languages which support Fibers (light-weight threads) like Ruby, Python etc.</p>
+
+<p><b><i>Libraries Supporting Fibers</i></b></p>
+
+<p>Most application codebase can be divided into two major parts</p>
+
+<ol>
+<li>Business or functional part :&ndash; All business and function logic of application is writen in this part of codebase by project team developers. Most of developers time is spend working on this part of application.</li>
+<li>Framework or Library part :&ndash; In all projects we end-up using several libraries like mvc framework, database drivers etc. which are third part libraries developed by developers outside team. These usually are used accross projects and developers usually spend every little time modifing or changing this part.</li>
+</ol>
+
+
+<p>In the express sample above</p>
+
+<ol>
+<li><i>Server.js</i> belongs to Business application part.</li>
+<li><i>ExpressJS, Fibers.js, redis.js, fib-middleware.js, fib-request and  fib-redis.js </i> belong to framework or library part. i.e. once implemented by library developers or project team, it can be re-used across projects.</li>
+</ol>
+
+
+<p>As shown in the above code, creating fiber based wrapper libraries for NodeJS libraries is pretty simple.</p>
+
+<p>Recently, library developers started supporting Promise Library, which was not the case before. As fibers gain wider developer acceptance, library developers would also support fibers.</p>
+
+<p><b><i>Asynchronous Vs Parallel</i></b></p>
+
+<p>Most of the examples we have seen till now (this and previous blogs on reactor pattern) has been an instance of synchronous code converted to asynchronous code to make it non-blocking. While this is a common scenario and in normal projects it covers 90 to 95% of scenarios in NodeJS applications. But there are occasional requirement which require multiple parallel requests to be made and wait for all the responses to get back. This is a genuine case where parallel or async processing is required and should be allowed to work asynchronously in usual NodeJS Async pattern with help Promise Library (Q.all()).</p>
+
+<p><b><i>Performance</i></b></p>
+
+<p>Siege based Performace testing of async call-back based code and sequential fibers code (shown above) showed similar results on my MacBook Pro.</p>
+
+<figure class='code'><figcaption><span>Callback code Performance Test Result </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>siege -r 10 -c 100 http://localhost:3000/users/11265765672
+</span><span class='line'>
+</span><span class='line'>Transactions:             1000 hits
+</span><span class='line'>Availability:           100.00 %
+</span><span class='line'>Elapsed <span class="nb">time</span>:            10.06 secs
+</span><span class='line'>Data transferred:         0.20 MB
+</span><span class='line'>Response <span class="nb">time</span>:                0.01 secs
+</span><span class='line'>Transaction rate:        99.40 trans/sec
+</span><span class='line'>Throughput:               0.02 MB/sec
+</span><span class='line'>Concurrency:              0.66
+</span><span class='line'>Successful transactions:        1000
+</span><span class='line'>Failed transactions:             0
+</span><span class='line'>Longest transaction:          0.05
+</span><span class='line'>Shortest transaction:         0.00
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>Fibers bases Non-Blocking IO and Sequential code Performance Test Result </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>siege -r 10 -c 100 http://localhost:3000/users/11265765672
+</span><span class='line'>
+</span><span class='line'>Transactions:             1000 hits
+</span><span class='line'>Availability:           100.00 %
+</span><span class='line'>Elapsed <span class="nb">time</span>:             9.09 secs
+</span><span class='line'>Data transferred:         0.20 MB
+</span><span class='line'>Response <span class="nb">time</span>:                0.01 secs
+</span><span class='line'>Transaction rate:       110.01 trans/sec
+</span><span class='line'>Throughput:               0.02 MB/sec
+</span><span class='line'>Concurrency:              0.92
+</span><span class='line'>Successful transactions:        1000
+</span><span class='line'>Failed transactions:             0
+</span><span class='line'>Longest transaction:          0.06
+</span><span class='line'>Shortest transaction:         0.00
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><b><i>Conclusion</i></b></p>
+
+<p>With Lightweight thread (Fibers) we can do Co-Operative multi-tasking which voluntarily relinquish control and resume processing. If application framework and libraries support Fibers or library wrappers created as shown in above example, functional and application logic can be written in synchronous style. Presence of Fibers, async code can be abstracted into Framework and libraries from functional code. As functional code tend to be larger than wrapper code that might be required, this will substantially reduce application complexity.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Reactor Pattern Part 3 - Promises to solve callback hell]]></title>
