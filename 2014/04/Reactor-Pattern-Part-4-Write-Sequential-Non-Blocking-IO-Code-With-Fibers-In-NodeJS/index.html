@@ -518,7 +518,7 @@
 
 <p>Most of the examples we have seen till now (this and previous blogs on reactor pattern) has been an instance of synchronous code converted to asynchronous code to make it non-blocking. While this is a common scenario and in normal projects it covers 90 to 95% of scenarios in NodeJS applications. But there are occasional requirement which require multiple parallel requests to be made and wait for all the responses to get back. This is a genuine case where parallel or async processing is required and should be allowed to work asynchronously in usual NodeJS Async pattern with help Promise Library (Q.all()).</p>
 
-<p><b><i>Performance</i></b></p>
+<p><b><i>Performance/Scalability</i></b></p>
 
 <p>Siege based Performace testing of async call-back based code and sequential fibers code (shown above) showed similar results on my MacBook Pro.</p>
 
