@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Software Design | Venkatesh CM]]></title>
   <link href="http://venkateshcm.github.io/blog/categories/software-design/atom.xml" rel="self"/>
   <link href="http://venkateshcm.github.io/"/>
-  <updated>2014-04-28T17:51:16+05:30</updated>
+  <updated>2014-04-28T17:54:03+05:30</updated>
   <id>http://venkateshcm.github.io/</id>
   <author>
     <name><![CDATA[Venkatesh CM]]></name>
@@ -62,9 +62,10 @@
 
 <p>There are several tools and conventions which make life easier, we should just follow them instead of reinventing new solutions. Following conventions and standards is very important means of managing code quality.</p>
 
-<p>$ python</p>
+<pre><code>$ python
 
-<pre><code>&gt;&gt;&gt; import this
+&gt;&gt;&gt; import this
+
 The Zen of Python, by Tim Peters
 1 Beautiful is better than ugly.
 2 Explicit is better than implicit.
