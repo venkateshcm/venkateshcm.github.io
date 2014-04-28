@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Architecture | Venkatesh CM]]></title>
   <link href="http://venkateshcm.github.io/blog/categories/architecture/atom.xml" rel="self"/>
   <link href="http://venkateshcm.github.io/"/>
-  <updated>2014-04-27T11:17:22+05:30</updated>
+  <updated>2014-04-28T17:45:14+05:30</updated>
   <id>http://venkateshcm.github.io/</id>
   <author>
     <name><![CDATA[Venkatesh CM]]></name>
@@ -14,38 +14,114 @@
 
   
   <entry>
+    <title type="html"><![CDATA[Zen Of Software Design - Part 2]]></title>
+    <link href="http://venkateshcm.github.io/2014/04/Zen-Of-Software-Design-Part-2/"/>
+    <updated>2014-04-28T00:00:00+05:30</updated>
+    <id>http://venkateshcm.github.io/2014/04/Zen-Of-Software-Design-Part-2</id>
+    <content type="html"><![CDATA[<p>This blog is part 2 of <a href="/2014/04/Zen-Of-Software-Design-Part-1/">Zen of Software Design : Part 1</a> which covers lines 1 to 9, if you have not read it please read it before reading this blog. In this blog I will cover lines 10 to 19 of Zen of Python</p>
+
+<p><b><i>Errors should never pass silently.</i></b><br/>
+<b><i>Unless explicitly silenced.</i></b></p>
+
+<p>Silencing an error is hiding a symptom. Catching an exception and ignoring it is hiding error from being discovered and providing false feedback to user. Application should make errors transparent and visible. i.e. End user should know that the current task has failed and he had to take appropriate action and not proceed with assumption that the task has succeeded.</p>
+
+<p>That said, in few occasions when a low priority task is performed along with high priority task, it is better not to fail the entire request if low priority task fails.</p>
+
+<p>For Example:&ndash; User registration might have two steps</p>
+
+<ul>
+<li>Update user information in datastore</li>
+<li>Send out an confirmation email</li>
+</ul>
+
+
+<p>If user information is updated in datastore and sending confirmation email failed it is ok to ignore send email error by queuing it to be processed later. But this also means taking appropriate steps to intimate support person and to make sure developer has enough information to figure out the reason for failure.</p>
+
+<p><b><i>In the face of ambiguity, refuse the temptation to guess.</i></b><br/>
+<b><i>Although that way may not be obvious at first unless you&rsquo;re Dutch.</i></b></p>
+
+<p>In large systems it is difficult to figure what went wrong, without testing and inspecting several scenarios. I have seen developers jump into code to fix an issue without understanding the root caused for error and later to realise they were barking on wrong tree. It is better to simulate the error and than find a solution to fix the error, instead of working on a solution directly. After simulating error we could test out different hypothesis to confirm the assumptions.</p>
+
+<p><b><i>Now is better than never.</i></b><br/>
+<b><i>Although never is often better than <em>right</em> now.</i></b></p>
+
+<p>When faced with a need for large scale code refactoring, we tend to procrastinate and postpone the refactoring. Even thought we know the urgency or necessity for refactoring and how to fix the problem, we keep broken windows in codebase causing more issues.</p>
+
+<p>There are cases where we don&rsquo;t have a solution for the problem or we don&rsquo;t have enough time to make the change right now. It is better to hold off changes, instead of doing half baked (partial) solution right now. In many cases it is better to hold off doing the changes until the right opportune moment, instead of jumping into action right away. (Eg :&ndash; Premature optimisation)</p>
+
+<p><b><i>If the implementation is hard to explain, it&rsquo;s a bad idea.</i></b><br/>
+<b><i>If the implementation is easy to explain, it may be a good idea.</i></b></p>
+
+<p>If the business problem is not modelled correctly or there is several exceptions to most type of application flow. It tends to be hard to explain and it should be treated as a smell on design.</p>
+
+<p>Difficulty to explain means bad design but easy to explain does not imply good design. Simple design might not have taken all different scenarios into consideration or could have made plain wrong assumption.</p>
+
+<p>Design should be as-complex or as-simple as the requirement needs, not more and not less. Over designing is adding unnecessary complexity to the system and under designing is not handling all scenarios.</p>
+
+<p><b><i>Namespaces are one honking great idea &mdash; let&rsquo;s do more of those!</i></b></p>
+
+<p>There are several tools and conventions which make life easier, we should just follow them instead of reinventing new solutions. Following conventions and standards is very important means of managing code quality.</p>
+
+<p>$ python</p>
+
+<pre><code>&gt;&gt;&gt; import this
+The Zen of Python, by Tim Peters
+1 Beautiful is better than ugly.
+2 Explicit is better than implicit.
+3 Simple is better than complex.
+4 Complex is better than complicated.
+5 Flat is better than nested.
+6 Sparse is better than dense.
+7 Readability counts.
+8 Special cases aren't special enough to break the rules.
+9 Although practicality beats purity.
+10 Errors should never pass silently.
+11 Unless explicitly silenced.
+12 In the face of ambiguity, refuse the temptation to guess.
+13 There should be one-- and preferably only one --obvious way to do it.
+14 Although that way may not be obvious at first unless you're Dutch.
+15 Now is better than never.
+16 Although never is often better than *right* now.
+17 If the implementation is hard to explain, it's a bad idea.
+18 If the implementation is easy to explain, it may be a good idea.
+19 Namespaces are one honking great idea -- let's do more of those! 
+</code></pre>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Zen of Software Design - Part 1]]></title>
     <link href="http://venkateshcm.github.io/2014/04/Zen-Of-Software-Design-Part-1/"/>
     <updated>2014-04-11T00:00:00+05:30</updated>
     <id>http://venkateshcm.github.io/2014/04/Zen-Of-Software-Design-Part-1</id>
     <content type="html"><![CDATA[<p>I call it Zen of Software Design.. instead of <a href="http://legacy.python.org/dev/peps/pep-0020/">Zen of Python</a> since it applies to all of software design and not only to python. The poem itself is presented at the bottom of this blog for reference and below is my interpretations and thoughts on it.</p>
 
-<p>Lines 1 to 9 of <a href="http://legacy.python.org/dev/peps/pep-0020/">Zen of Python</a> is covered in this blog, Lines 10 to 19 will be covered in Part 2.</p>
+<p>Lines 1 to 9 of <a href="http://legacy.python.org/dev/peps/pep-0020/">Zen of Python</a> is covered in this blog, Lines 10 to 19 will be covered in <a href="/2014/04/Zen-Of-Software-Design-Part-2/">Zen of Software Design : Part 2</a>.</p>
 
 <br/>
 
 
 <p><b><i>Interpretation</i></b></p>
 
-<p>The way to read &ldquo;better than&rdquo; statements in above poem, is to understand that one does not always win over other and both have their place under sun. But the poem advocates one over another when all things are equal and there is a choice to be made. i.e. leaning or favoring one over another.</p>
+<p>The way to read &ldquo;better than&rdquo; statements in above poem, is to understand that one does not always win over other and both have their place under sun. But the poem advocates one over another when all things are equal and there is a choice to be made. i.e. leaning or favouring one over another.</p>
 
 <br/>
 
 
 <p><b><i>Beautiful is better than ugly</i></b></p>
 
-<p>While it is easy to understand that beautiful is better than ugly, it is very subjective to know beautiful from ugly. If you look at source code as an art, like a painting, bad code/design will stink (<a href="http://en.wikipedia.org/wiki/Code_smell">code-smell</a>) and make you  uncomfortable instinctively. I don&rsquo;t think there are standard rules by which you can differentiate beautiful from ugly design similar to paintings. I guess it comes from looking at different codebase and experience.</p>
+<p>While it is easy to understand that beautiful is better than ugly, it is very subjective to know beautiful from ugly. If you look at source code as an art, like a painting, bad code/design will stink (<a href="http://en.wikipedia.org/wiki/Code_smell">code-smell</a>) and make you  uncomfortable instinctively. I don&rsquo;t have standard rules by which you can differentiate beautiful from ugly design (in same sense as you can not set standard rules for beautiful paintings). I guess it comes from looking at different codebase and experience.</p>
 
 <br/>
 
 
 <p><b><i>Explicit is better than implicit.</i></b></p>
 
-<p>It should be obvious to figure-out what&rsquo;s happening in code, for someone not familiar with the codebase. Usually implicit design makes it look like bloack magic without any clue how it is working or where to look for related code. There are two kind of implicits we face in day-to-day work.</p>
+<p>It should be obvious to figure-out what&rsquo;s happening in code, even for someone not familiar with the codebase. Usually implicit design makes it look like black magic without any clue how it is working or where to look for related code. There are two kind of implicit we face in day-to-day work.</p>
 
 <ul>
-<li><p>Well known implicits :&ndash; Things which are well documented and have become standard way of doing things. These implicits usually go across project team boundaries. Example : SpringMVC annotations, Rails conventions</p></li>
-<li><p>Project implicits :&ndash; Things which project teams builds within the project which is not something a new developer would be acquainted with in other projects.</p></li>
+<li><p>Well known implicit :&ndash; Things which are well documented and have become standard way of doing things. These implicit usually go across project team boundaries. Example : SpringMVC annotations, Rails conventions</p></li>
+<li><p>Project implicit :&ndash; Things which project teams builds within the project which is not something a new developer would be acquainted with in other projects.</p></li>
 </ul>
 
 
@@ -153,9 +229,9 @@
 </ul>
 
 
-<p>On the other hand if they truly are special cases and trying to extend or modeling it has one of the existing flows make design complicated, we should not hesitate to incorporate the new requirement as special case as a pragmatic/practical architect or developer should do.</p>
+<p>On the other hand if they truly are special cases and trying to extend or modelling it has one of the existing flows make design complicated, we should not hesitate to incorporate the new requirement as special case as a pragmatic/practical architect or developer should do.</p>
 
-<p>Lines 10 to 19 will be covered in Part 2 of this blog</p>
+<p>Lines 10 to 19 will be covered in <a href="/2014/04/Zen-Of-Software-Design-Part-2/">Zen of Software Design : Part 2</a> of this blog</p>
 
 <pre><code>$ python
 

@@ -300,12 +300,12 @@
 <span class='line-number'>22</span>
 <span class='line-number'>23</span>
 </pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">loadEventsForUser</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span><span class="nx">user</span><span class="p">){</span>
-</span><span class='line'>  <span class="k">return</span> <span class="nx">db</span><span class="p">.</span><span class="nx">events</span><span class="p">.</span><span class="nx">find</span><span class="p">({</span><span class="nx">user_id</span><span class="o">:</span><span class="nx">user</span><span class="p">.</span><span class="nx">id</span><span class="p">},</span><span class="nx">returnEvents</span><span class="p">);</span>  
+</span><span class='line'>  <span class="k">return</span> <span class="nx">db</span><span class="p">.</span><span class="nx">events</span><span class="p">.</span><span class="nx">find</span><span class="p">({</span><span class="nx">user_id</span><span class="o">:</span><span class="nx">user</span><span class="p">.</span><span class="nx">id</span><span class="p">});</span>  
 </span><span class='line'><span class="p">};</span>
 </span><span class='line'>
 </span><span class='line'><span class="kd">var</span> <span class="nx">findUser</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
 </span><span class='line'>  <span class="kd">var</span> <span class="nx">facebook_id</span> <span class="o">=</span> <span class="nx">request</span><span class="p">.</span><span class="nx">param</span><span class="p">(</span><span class="s1">&#39;facebook_id&#39;</span><span class="p">);</span>
-</span><span class='line'>  <span class="k">return</span> <span class="nx">db</span><span class="p">.</span><span class="nx">users</span><span class="p">.</span><span class="nx">findOne</span><span class="p">({</span><span class="nx">fb_id</span><span class="o">:</span><span class="nx">facebook_id</span><span class="p">},</span> <span class="nx">loadUser</span><span class="p">);</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">db</span><span class="p">.</span><span class="nx">users</span><span class="p">.</span><span class="nx">findOne</span><span class="p">({</span><span class="nx">fb_id</span><span class="o">:</span><span class="nx">facebook_id</span><span class="p">});</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
 </span><span class='line'><span class="kd">function</span> <span class="nx">getUserEvents</span><span class="p">(</span><span class="nx">request</span><span class="p">,</span><span class="nx">response</span><span class="p">){</span>

@@ -1,0 +1,291 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Zen Of Software Design - Part 2 - Venkatesh CM</title>
+  <meta name="author" content="Venkatesh CM">
+
+  
+  <meta name="description" content="This blog is part 2 of Zen of Software Design : Part 1 which covers lines 1 to 9, if you have not read it please read it before reading this blog. In &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://venkateshcm.github.io/2014/04/Zen-Of-Software-Design-Part-2">
+  <link href="/img/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Venkatesh CM" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+        <link rel="stylesheet" href="/fonts/Serif/cmun-serif.css">
+        <link rel="stylesheet" href="/fonts/Serif-Slanted/cmun-serif-slanted.css">
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-49867190-1', 'venkateshcm.com');
+  ga('send', 'pageview');
+
+</script>
+
+</head>
+
+<body   >
+<nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:venkateshcm.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="nav main-navigation">
+  <li><a href="/">Home</a></li>
+  <li><a href="/about">About</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+</nav>
+  
+  	<header role="banner" class="hidden"><hgroup>
+  <h1><a href="/">Venkatesh CM</a></h1>
+  <h2 class="bold">&#955;</h2>
+  
+    <h2><span contenteditable='false'>A blog by an hacker, developer, architect, machine learning enthusiast and big data miner.</span></h2>
+  
+</hgroup>
+
+</header>
+  
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Zen Of Software Design - Part 2</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-28T00:00:00+05:30" pubdate data-updated="true">28 April, 2014</time>
+        
+           | <a href="#disqus_thread"
+             data-disqus-identifier="http://venkateshcm.github.io">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>This blog is part 2 of <a href="/2014/04/Zen-Of-Software-Design-Part-1/">Zen of Software Design : Part 1</a> which covers lines 1 to 9, if you have not read it please read it before reading this blog. In this blog I will cover lines 10 to 19 of Zen of Python</p>
+
+<p><b><i>Errors should never pass silently.</i></b><br/>
+<b><i>Unless explicitly silenced.</i></b></p>
+
+<p>Silencing an error is hiding a symptom. Catching an exception and ignoring it is hiding error from being discovered and providing false feedback to user. Application should make errors transparent and visible. i.e. End user should know that the current task has failed and he had to take appropriate action and not proceed with assumption that the task has succeeded.</p>
+
+<p>That said, in few occasions when a low priority task is performed along with high priority task, it is better not to fail the entire request if low priority task fails.</p>
+
+<p>For Example:&ndash; User registration might have two steps</p>
+
+<ul>
+<li>Update user information in datastore</li>
+<li>Send out an confirmation email</li>
+</ul>
+
+
+<p>If user information is updated in datastore and sending confirmation email failed it is ok to ignore send email error by queuing it to be processed later. But this also means taking appropriate steps to intimate support person and to make sure developer has enough information to figure out the reason for failure.</p>
+
+<p><b><i>In the face of ambiguity, refuse the temptation to guess.</i></b><br/>
+<b><i>Although that way may not be obvious at first unless you&rsquo;re Dutch.</i></b></p>
+
+<p>In large systems it is difficult to figure what went wrong, without testing and inspecting several scenarios. I have seen developers jump into code to fix an issue without understanding the root caused for error and later to realise they were barking on wrong tree. It is better to simulate the error and than find a solution to fix the error, instead of working on a solution directly. After simulating error we could test out different hypothesis to confirm the assumptions.</p>
+
+<p><b><i>Now is better than never.</i></b><br/>
+<b><i>Although never is often better than <em>right</em> now.</i></b></p>
+
+<p>When faced with a need for large scale code refactoring, we tend to procrastinate and postpone the refactoring. Even thought we know the urgency or necessity for refactoring and how to fix the problem, we keep broken windows in codebase causing more issues.</p>
+
+<p>There are cases where we don&rsquo;t have a solution for the problem or we don&rsquo;t have enough time to make the change right now. It is better to hold off changes, instead of doing half baked (partial) solution right now. In many cases it is better to hold off doing the changes until the right opportune moment, instead of jumping into action right away. (Eg :&ndash; Premature optimisation)</p>
+
+<p><b><i>If the implementation is hard to explain, it&rsquo;s a bad idea.</i></b><br/>
+<b><i>If the implementation is easy to explain, it may be a good idea.</i></b></p>
+
+<p>If the business problem is not modelled correctly or there is several exceptions to most type of application flow. It tends to be hard to explain and it should be treated as a smell on design.</p>
+
+<p>Difficulty to explain means bad design but easy to explain does not imply good design. Simple design might not have taken all different scenarios into consideration or could have made plain wrong assumption.</p>
+
+<p>Design should be as-complex or as-simple as the requirement needs, not more and not less. Over designing is adding unnecessary complexity to the system and under designing is not handling all scenarios.</p>
+
+<p><b><i>Namespaces are one honking great idea &mdash; let&rsquo;s do more of those!</i></b></p>
+
+<p>There are several tools and conventions which make life easier, we should just follow them instead of reinventing new solutions. Following conventions and standards is very important means of managing code quality.</p>
+
+<p>$ python</p>
+
+<pre><code>&gt;&gt;&gt; import this
+The Zen of Python, by Tim Peters
+1 Beautiful is better than ugly.
+2 Explicit is better than implicit.
+3 Simple is better than complex.
+4 Complex is better than complicated.
+5 Flat is better than nested.
+6 Sparse is better than dense.
+7 Readability counts.
+8 Special cases aren't special enough to break the rules.
+9 Although practicality beats purity.
+10 Errors should never pass silently.
+11 Unless explicitly silenced.
+12 In the face of ambiguity, refuse the temptation to guess.
+13 There should be one-- and preferably only one --obvious way to do it.
+14 Although that way may not be obvious at first unless you're Dutch.
+15 Now is better than never.
+16 Although never is often better than *right* now.
+17 If the implementation is hard to explain, it's a bad idea.
+18 If the implementation is easy to explain, it may be a good idea.
+19 Namespaces are one honking great idea -- let's do more of those! 
+</code></pre>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Venkatesh CM</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-04-28T00:00:00+05:30" pubdate data-updated="true">28 April, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/architecture/'>Architecture</a>, <a class='category' href='/blog/categories/software-design/'>Software Design</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/2014/04/Reactor-Pattern-Part-4-Write-Sequential-Non-Blocking-IO-Code-With-Fibers-In-NodeJS/" title="Previous Post: Reactor Pattern Part 4 - Write Sequential Non-Blocking IO Code With Fibers in NodeJS">&laquo; Reactor Pattern Part 4 - Write Sequential Non-Blocking IO Code With Fibers in NodeJS</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Venkatesh CM
+</p>
+
+<!-- Start of StatCounter Code for Blogger / Blogspot -->
+<script type='text/javascript'>
+//<![CDATA[
+var sc_project=9737354; 
+var sc_invisible=0; 
+var sc_security="f75f3962"; 
+var scJsHost = (("https:" == document.location.protocol) ? "https://secure." : "http://www.");
+document.write("<sc"+"ript type='text/javascript' src='" + scJsHost+ "statcounter.com/counter/counter_xhtml.js'></"+"script>");
+//]]>
+</script>
+<noscript><div class='statcounter'><a class='statcounter' href='http://statcounter.com/blogger/' title='blogspot visit counter'><img alt='blogspot visit counter' class='statcounter' src='http://c.statcounter.com/9737354/0/f75f3962/0/'/></a></div></noscript>
+<!-- End of StatCounter Code for Blogger / Blogspot -->
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'venkateshcm';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://venkateshcm.github.io/2014/04/Zen-Of-Software-Design-Part-2/';
+        var disqus_url = 'http://venkateshcm.github.io/2014/04/Zen-Of-Software-Design-Part-2/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
