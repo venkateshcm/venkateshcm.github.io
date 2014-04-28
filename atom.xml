@@ -4,7 +4,7 @@
   <title><![CDATA[Venkatesh CM]]></title>
   <link href="http://venkateshcm.github.io/atom.xml" rel="self"/>
   <link href="http://venkateshcm.github.io/"/>
-  <updated>2014-04-28T17:54:03+05:30</updated>
+  <updated>2014-04-28T18:02:10+05:30</updated>
   <id>http://venkateshcm.github.io/</id>
   <author>
     <name><![CDATA[Venkatesh CM]]></name>
@@ -52,11 +52,11 @@
 <p><b><i>If the implementation is hard to explain, it&rsquo;s a bad idea.</i></b><br/>
 <b><i>If the implementation is easy to explain, it may be a good idea.</i></b></p>
 
-<p>If the business problem is not modelled correctly or there is several exceptions to most type of application flow. It tends to be hard to explain and it should be treated as a smell on design.</p>
+<p>If the business problem is not modelled correctly or there are several exceptions each core application flows. Software design tends to be hard to explain. In such cases, hard to explain, should be treated as a design-smell.</p>
 
 <p>Difficulty to explain means bad design but easy to explain does not imply good design. Simple design might not have taken all different scenarios into consideration or could have made plain wrong assumption.</p>
 
-<p>Design should be as-complex or as-simple as the requirement needs, not more and not less. Over designing is adding unnecessary complexity to the system and under designing is not handling all scenarios.</p>
+<p>Design should be as-complex or as-simple as the requirement need, not more and not less. Over designing is adding unnecessary complexity to the system and under designing is not handling all scenarios.</p>
 
 <p><b><i>Namespaces are one honking great idea &mdash; let&rsquo;s do more of those!</i></b></p>
 
@@ -901,7 +901,7 @@ The Zen of Python, by Tim Peters
 
 <p><b><i>Complex is better than complicated.</i></b></p>
 
-<p>Design can be complex because domain is complex but sometime domain is simple but software is designed or implemented in complicated way. Design should be as-complex or as-simple as the requirement needs, not more and not less.</p>
+<p>Design can be complex because domain is complex but sometime domain is simple but software is designed or implemented in complicated way. Design should be as-complex or as-simple as the requirement need, not more and not less.</p>
 
 <p>The questions I ask to figure out if design is complicated is</p>
 
