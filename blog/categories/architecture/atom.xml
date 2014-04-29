@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Architecture | Venkatesh CM]]></title>
   <link href="http://venkateshcm.github.io/blog/categories/architecture/atom.xml" rel="self"/>
   <link href="http://venkateshcm.github.io/"/>
-  <updated>2014-04-29T11:48:54+05:30</updated>
+  <updated>2014-04-29T12:29:15+05:30</updated>
   <id>http://venkateshcm.github.io/</id>
   <author>
     <name><![CDATA[Venkatesh CM]]></name>
@@ -325,7 +325,7 @@ But rarely have I seen a solution which fixes the problem completely with-out an
 
 <p><b><i>Why</i></b></p>
 
-<p>Advanced Level is when someone understands the business goals of the application and is allowed to choose requirements, design and implementation to active the business goal. As Project Managers, Product Owners, Analysts and Developers start working on designing/implementing features and requirements, they understand the business goals and why something is being build.</p>
+<p>Advanced Level is when someone understands the business goals of the application and is allowed to choose requirements, design and implementation to achieve the business goal. As Project Managers, Product Owners, Analysts and Developers start working on designing/implementing features and requirements, they understand the business goals and why something is being build.</p>
 
 <p>Change Area :&ndash; Software Requirements, Design and Implementation. Business goal can not be changed by team.</p>
 
