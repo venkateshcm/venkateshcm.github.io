@@ -4,7 +4,7 @@
   <title><![CDATA[Venkatesh CM]]></title>
   <link href="http://venkateshcm.github.io/atom.xml" rel="self"/>
   <link href="http://venkateshcm.github.io/"/>
-  <updated>2014-04-29T12:29:15+05:30</updated>
+  <updated>2014-04-30T07:24:29+05:30</updated>
   <id>http://venkateshcm.github.io/</id>
   <author>
     <name><![CDATA[Venkatesh CM]]></name>
@@ -99,11 +99,11 @@ The Zen of Python, by Tim Peters
 
 <p><b><i>Recap &ndash; Part 3 Conclusion</i></b></p>
 
-<p>Async or Non-blocking IO introduces new challenges on how applications should to be structured and how async call backs can be abstracted away using promises like library. We need Non-blocking IO application since, sequencial blocking IO applications are not scalable. So Non-Blocking IO or Asynchronous code is not a desired feature but a nessesary evil to achive scalability.</p>
+<p>Async or Non-blocking IO introduces new challenges on how applications should to be structured and how async call backs can be abstracted away using promises like library. We need Non-blocking IO application since, sequential blocking IO applications are not scalable. So Non-Blocking IO or Asynchronous code is not a desired feature but a necessary evil to achieve scalability.</p>
 
-<p>Finally, we should question assumption that Non-blocking IO and Asynchronous code are clubed together and one comes with other. Is it possible to get the best of both the worlds, i.e. Sequential code and Non-Blocking IO scalability. In fact, I think there is an option based on Fibers which can provide best of both the worlds.</p>
+<p>Finally, we should question assumption that Non-blocking IO and Asynchronous code are clubbed together and one comes with other. Is it possible to get the best of both the worlds, i.e. Sequential code and Non-Blocking IO scalability. In fact, I think there is an option based on Fibers which can provide best of both the worlds.</p>
 
-<p>I will cover Fibers and how they achive both Non-Blocking IO and Sequential codebase and demonstrate it with an expressjs resfull service in the this blog.</p>
+<p>I will cover Fibers and how they achieve both Non-Blocking IO and Sequential codebase and demonstrate it with an expressjs resful service in the this blog.</p>
 
 <p>Pre-emptive and co-operative multitasking is a good place to begin understanding Fibers.</p>
 
@@ -197,8 +197,8 @@ The Zen of Python, by Tim Peters
 <li>Fibers are created using Fiber() function and the task function is executed using run method.</li>
 <li>Pattern used to suspend and resume a Fiber. This pattern will be reused while making Non-Blocking IO calls.</li>
 <li>Within a fiber thread Fiber.current returns current executing fiber.</li>
-<li>Fiber.yield suspends execution of current thread i.e. voluntarily relinquishs control. In other words it allows another fiber thread execute co-operatively.</li>
-<li><i>task1</i> and <i>task2</i> functions don&rsquo;t have callbacks or promises and is sequencial code.</li>
+<li>Fiber.yield suspends execution of current thread i.e. voluntarily relinquish control. In other words it allows another fiber thread execute co-operatively.</li>
+<li><i>task1</i> and <i>task2</i> functions don&rsquo;t have callbacks or promises and is sequential code.</li>
 <li><i>task1</i> and <i>task2</i> functions don&rsquo;t know about fibers and developers can read/write these functions as sequential code.</li>
 <li>Fibers provide co-operative multi-tasking capability</li>
 </ul>
@@ -234,9 +234,9 @@ The Zen of Python, by Tim Peters
 
 <p>The output of fibersExample.js shows the other of execution with sequence numbers. Even though NodeJS is single threaded application, the above code demonstrates &ndash; how multiple tasks are run with-out blocking each other.</p>
 
-<p><b><i>Fibers &ndash; In ExpressJS Restfull Service</i></b></p>
+<p><b><i>Fibers &ndash; In ExpressJS Restful Service</i></b></p>
 
-<p>Lets look at an ExpressJS restfull service example, to keep code simple, I have not included exception handling which can be done using try &ndash; catch blocks as we do other languages. It provides three service methods</p>
+<p>Lets look at an ExpressJS restful service example, to keep code simple, I have not included exception handling which can be done using try &ndash; catch blocks as we do other languages. It provides three service methods</p>
 
 <ol>
 <li><b>/google</b> :&ndash; Makes a http get call to google and returns html response from google to client.</li>
@@ -345,15 +345,15 @@ The Zen of Python, by Tim Peters
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>In the above example, we have used few custom/wrapper libraries <i>&lsquo;fib-middleware&rsquo;</i>, <i>&lsquo;fib-request&rsquo;</i> and <i>&lsquo;fib-redis&rsquo;</i>. They are simple extentions of simple fibers example above.</p>
+<p>In the above example, we have used few custom/wrapper libraries <i>&lsquo;fib-middleware&rsquo;</i>, <i>&lsquo;fib-request&rsquo;</i> and <i>&lsquo;fib-redis&rsquo;</i>. They are simple extensions of simple fibers example above.</p>
 
 <p>You can notice that</p>
 
 <ul>
 <li>Fibers are setup as middleware using <i>app.use(fibersMiddleWare.runInFiber)</i></li>
-<li>Controller and Model methods are Synchronous and Sequencial Code.</li>
-<li>Http get Request and Datastore (redis_client) opterations are also Synchronous.</li>
-<li>Other than sequencial code there is nothing special happening with-in Server.js code above.</li>
+<li>Controller and Model methods are Synchronous and Sequential Code.</li>
+<li>Http get Request and Datastore (redis_client) operations are also Synchronous.</li>
+<li>Other than sequential code there is nothing special happening with-in Server.js code above.</li>
 <li>Code demonstrates that Non-Blocking IO code can be synchronous and sequential</li>
 </ul>
 
@@ -388,7 +388,7 @@ The Zen of Python, by Tim Peters
 
 <p><b><i>Custom Wrapper Libraries to provide Fibers Support</i></b></p>
 
-<p><i>fib-request.js</i> and <i>fib-redis.js</i> are wrappers which provide Fibers support and are not required if orginal library (redis.js or request.js) support Fibers.</p>
+<p><i>fib-request.js</i> and <i>fib-redis.js</i> are wrappers which provide Fibers support and are not required if original library (redis.js or request.js) support Fibers.</p>
 
 <figure class='code'><figcaption><span>fib-request.js </span></figcaption>
 <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -485,8 +485,8 @@ The Zen of Python, by Tim Peters
 <p>Most application codebase can be divided into two major parts</p>
 
 <ol>
-<li>Business or functional part :&ndash; All business and function logic of application is writen in this part of codebase by project team developers. Most of developers time is spend working on this part of application.</li>
-<li>Framework or Library part :&ndash; In all projects we end-up using several libraries like mvc framework, database drivers etc. which are third part libraries developed by developers outside team. These usually are used accross projects and developers usually spend every little time modifing or changing this part.</li>
+<li>Business or functional part :&ndash; All business and function logic of application is written in this part of codebase by project team developers. Most of developers time is spend working on this part of application.</li>
+<li>Framework or Library part :&ndash; In all projects we end-up using several libraries like mvc framework, database drivers etc. which are third part libraries developed by developers outside team. These usually are used across projects and developers usually spend every little time modifying or changing this part.</li>
 </ol>
 
 
@@ -508,7 +508,7 @@ The Zen of Python, by Tim Peters
 
 <p><b><i>Performance/Scalability</i></b></p>
 
-<p>Siege based Performace testing of async call-back based code and sequential fibers code (shown above) showed similar results on my MacBook Pro.</p>
+<p>Siege based Performance testing of async call-back based code and sequential fibers code (shown above) showed similar results on my MacBook Pro.</p>
 
 <figure class='code'><figcaption><span>Callback code Performance Test Result </span></figcaption>
 <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -1078,6 +1078,15 @@ The Zen of Python, by Tim Peters
 
 
 <p>Some of the disadvantages can be mitigated by using fiber (ruby fibers, node fibers), will cover Fibers in another blog.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Scaling Agile Teams]]></title>
+    <link href="http://venkateshcm.github.io/2014/04/Scaling-Agile-Team/"/>
+    <updated>2014-04-09T00:00:00+05:30</updated>
+    <id>http://venkateshcm.github.io/2014/04/Scaling-Agile-Team</id>
+    <content type="html"><![CDATA[<p>1) divide and conquer</p>
 ]]></content>
   </entry>
   
