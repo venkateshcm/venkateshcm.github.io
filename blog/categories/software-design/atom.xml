@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Software Design | Venkatesh CM]]></title>
   <link href="http://venkateshcm.github.io/blog/categories/software-design/atom.xml" rel="self"/>
   <link href="http://venkateshcm.github.io/"/>
-  <updated>2014-04-30T16:08:08+05:30</updated>
+  <updated>2014-04-30T16:12:36+05:30</updated>
   <id>http://venkateshcm.github.io/</id>
   <author>
     <name><![CDATA[Venkatesh CM]]></name>
@@ -305,6 +305,39 @@ But rarely have I seen a solution which fixes the problem completely with-out an
     <link href="http://venkateshcm.github.io/2014/04/How-What-And-Why-of-Software-Development/"/>
     <updated>2014-04-07T00:00:00+05:30</updated>
     <id>http://venkateshcm.github.io/2014/04/How-What-And-Why-of-Software-Development</id>
+    <content type="html"><![CDATA[<p>There are three levels at which a developer can operate during software development.</p>
+
+<p><b><i>How</i></b></p>
+
+<p>First Level or basic level is when someone is told what needs to be done. He/She does what is told. At this level the design is handed over to you and you are just implementing someone else&rsquo;s design without fully understanding implications of design.</p>
+
+<p>Change Area :&ndash; Implementation. Software Design is fixed but implementation is altered by team.</p>
+
+<p>Example :&ndash; Software company is provided with design documents with object class specifications and asked to implement the software.</p>
+
+<p><b><i>What</i></b></p>
+
+<p>Second Level or intermediate level is when someone is given a requirement and allowed to design and implement the software without major restrictions on how the requirement is designed or implemented. At this level developer is given freedom to choose different implementation options which achieve the desired requirement.</p>
+
+<p>Change Area :&ndash; Software Design and Implementation. Requirements is not allowed to change by team.</p>
+
+<p>Example :&ndash; Software company is provided with use case documents or requirement documents and asked to implement the software according to specifications given in requirement documents.</p>
+
+<p><b><i>Why</i></b></p>
+
+<p>Advanced Level is when someone understands the business goals of the application and is allowed to choose requirements, design and implementation to achieve the business goal. As Project Managers, Product Owners, Analysts and Developers start working on designing/implementing features and requirements, they understand the business goals and why something is being build.</p>
+
+<p>Change Area :&ndash; Software Requirements, Design and Implementation. Business goal can not be changed by team.</p>
+
+<p>Example :&ndash; Project team is formed with co-sourced members of business and software company and Teams goes through Inception process. During Inception process, the team gains first hand understanding of business goals and how they relate to features/requirements.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[How, What and Why of Software Development]]></title>
+    <link href="http://venkateshcm.github.io/2014/04/Guidelines-Restful-Web-Services/"/>
+    <updated>2014-04-07T00:00:00+05:30</updated>
+    <id>http://venkateshcm.github.io/2014/04/Guidelines-Restful-Web-Services</id>
     <content type="html"><![CDATA[<p>There are three levels at which a developer can operate during software development.</p>
 
 <p><b><i>How</i></b></p>
