@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Architecture | Venkatesh CM]]></title>
   <link href="http://venkateshcm.github.io/blog/categories/architecture/atom.xml" rel="self"/>
   <link href="http://venkateshcm.github.io/"/>
-  <updated>2014-05-01T10:08:20+05:30</updated>
+  <updated>2014-05-01T10:11:01+05:30</updated>
   <id>http://venkateshcm.github.io/</id>
   <author>
     <name><![CDATA[Venkatesh CM]]></name>
@@ -12,92 +12,6 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
-  
-  <entry>
-    <title type="html"><![CDATA[Performance Tuning of Web Applications]]></title>
-    <link href="http://venkateshcm.github.io/2014/05/Performance-Testing-Web-Applications/"/>
-    <updated>2014-05-02T00:00:00+05:30</updated>
-    <id>http://venkateshcm.github.io/2014/05/Performance-Testing-Web-Applications</id>
-    <content type="html"><![CDATA[<p>I will cover some of my learnings from performance testing large scale web application in this blog.</p>
-
-<p>I would like to define few terms to create common understanding and vocabulary to start. Later on will go through different stages one goes through in improving application performance like</p>
-
-<ul>
-<li>Identifying Performance bottlenecks</li>
-<li>Key metrics to monitor to make decisions</li>
-<li>Determining JVM Thread Pool size</li>
-</ul>
-
-
-<p><b><i>What does one mean by Performance of web application?</i></b></p>
-
-<p>Term performance of web application is used to mean several things but couple of things that everyone is primarily concerned with are</p>
-
-<ul>
-<li><p><b><i>Response Time</i></b></p>
-
-<p>The time taken by web application to process request and return response. Applications should respond to requests (response time) with in acceptable time limit. If application is taking beyond the acceptable time, it is said to be non-performing or degraded.</p></li>
-<li><p><b><i>Scalable</i></b></p>
-
-<p>The web application is said to be scalable if by adding more hardware, application can linearly take more requests than before. Two ways of adding more hardware are</p>
-
-<ul>
-<li><b><i>Scaling Up</i></b> :&ndash;
-increasing the number CPUs or adding faster CPUs on a single box.</li>
-<li><b><i>Scaling Out</i></b> :&ndash;
-increasing the number of boxes.</li>
-</ul>
-</li>
-</ul>
-
-
-<p><b><i>Scaling Up Vs Scaling Out</i></b></p>
-
-<p>Scaling out is considered more important as commodity hardware is cheaper compared to cost of special configuration hardware (super computer). But increasing the number of requests that an application can handle on a single box is also important.</p>
-
-<p>An application is said to be performing well if it can scale with acceptable response time by adding more resources.</p>
-
-<p><b><i>Response time Vs Scalability</i></b></p>
-
-<p>Response time and Scalability don&rsquo;t aways go together i.e. application might have acceptable response times but not scalable or application is scalable but does not have acceptable response times. We have strike a balance between scalability and response time to get acceptable performance of the application.</p>
-
-<p><b><i>Capacity Planning</i></b></p>
-
-<p>Capacity planning is an exercise of figuring out the required hardware to handle expected load in production. Usually it involves figuring out performance of application with fewer boxes and projecting it to based on performance per box. Finally verifying it with load/performance tests.</p>
-
-<p><b><i>Scalable Architecture</i></b></p>
-
-<p>Application architecture should be scalable (scale out) at each layer in multi layered architecture. For example :&ndash; As shown in diagram below we should be able linearly scale by add additional box in Application Layer or Database Layer.</p>
-
-<p>Adding multiple Load balancers is rare as a single box running nginx or HAProxy can handle more than 20K concurrent connections per box compared to web application boxes which can handle few thousand concurrent requests. So a single load balancer box can handle several web application boxes.</p>
-
-<p>Scaling database layer is dependent on technology used.</p>
-
-<p><b>RDBMS</b></p>
-
-<p>RDBMS database can be setup in master-slave mode with read/writes on master and only reads on slave. Master-Slave provides limited scaling of two boxes beyond which developers have to split the database into multiple databases by sharding data into multiple boxes. Transiting from single box database to multi box database with sharding is not a easy task.</p>
-
-<p><b>NoSQL</b></p>
-
-<p><a href="http://en.wikipedia.org/wiki/CAP_theorem">CAP theorem</a> has shown that is not possible to get Consistency, Availability and Partition tolerance simultaneously. NoSql databases usually compromise on consistency to get high availability and partition.</p>
-
-<p>Scaling Web Application layer and database layer is where most of developers time spent.</p>
-
-<p><b><i>Scaling bottlenecks</i></b></p>
-
-<p>Bottlenecks are formed due to two reasons</p>
-
-<ul>
-<li><p><b>Centralised component</b>
-A component in application architecture which can not be scaled out hence putting upper limit on number or requests that entire architecture or request pipeline.</p></li>
-<li><p><b>Low latency component</b>
-A slow component in request pipeline puts lower limit on the response time of the application.</p></li>
-</ul>
-
-
-<p>Usual solution to fix above issues is to make these components into background jobs or execute asynchronously with queuing.</p>
-]]></content>
-  </entry>
   
   <entry>
     <title type="html"><![CDATA[Zen Of Software Design - Part 2]]></title>
