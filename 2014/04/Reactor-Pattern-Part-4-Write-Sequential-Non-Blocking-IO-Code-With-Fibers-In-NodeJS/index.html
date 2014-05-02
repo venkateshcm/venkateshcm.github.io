@@ -107,13 +107,15 @@
   </header>
 
 
-<div class="entry-content"><p>This is the final part of 4 part Reactor Pattern series. In <a href="/2014/04/Reactor-Pattern-Part-1-Non-blocking-I-O/">Reactor Pattern Part 1 : Applications with Blocking I/O</a>, I went through issues faced by a single threaded application to scale to handle more requests pre box and the corresponding issues. In <a href="/2014/04/Reactor-Pattern-Part-2-Non-blocking-I-O/">Reactor Pattern Part 2 : Applications with Non-Blocking I/O</a> I went through what Reactor Pattern is and how it solved the Blocking IO issues and mentioned call back issue due to async code. <a href="/2014/04/Reactor-Pattern-Part-3-Promises-to-solve-callback-hell/">Reactor Pattern Part 3 &ndash; Promises to solve callback hell</a> talked about callback code issues in detail and how promise library can solve some of the issues.</p>
+<div class="entry-content"><p>This is the final part of 4 part Reactor Pattern series. In <a href="/2014/04/Reactor-Pattern-Part-1-Non-blocking-I-O/">Reactor Pattern Part 1 : Applications with Blocking I/O</a>, I went through issues faced by a single threaded application to scale to handle more requests pre box. In <a href="/2014/04/Reactor-Pattern-Part-2-Non-blocking-I-O/">Reactor Pattern Part 2 : Applications with Non-Blocking I/O</a> I went through what Reactor Pattern is and how it solved the Blocking IO issues and mentioned call back issue due to async code. <a href="/2014/04/Reactor-Pattern-Part-3-Promises-to-solve-callback-hell/">Reactor Pattern Part 3 &ndash; Promises to solve callback hell</a> talked about callback code issues in detail and how promise library can solve some of the issues.</p>
 
 <p><b><i>Recap &ndash; Part 3 Conclusion</i></b></p>
 
 <p>Async or Non-blocking IO introduces new challenges on how applications should to be structured and how async call backs can be abstracted away using promises like library. We need Non-blocking IO application since, sequential blocking IO applications are not scalable. So Non-Blocking IO or Asynchronous code is not a desired feature but a necessary evil to achieve scalability.</p>
 
 <p>Finally, we should question assumption that Non-blocking IO and Asynchronous code are clubbed together and one comes with other. Is it possible to get the best of both the worlds, i.e. Sequential code and Non-Blocking IO scalability. In fact, I think there is an option based on Fibers which can provide best of both the worlds.</p>
+
+<p>An interesting article on <a href="http://static.usenix.org/events/hotos03/tech/full_papers/vonbehren/vonbehren_html/">Why Events Are A Bad Idea</a> makes sequential control flow arguments in more depth.</p>
 
 <p>I will cover Fibers and how they achieve both Non-Blocking IO and Sequential codebase and demonstrate it with an expressjs resful service in the this blog.</p>
 
