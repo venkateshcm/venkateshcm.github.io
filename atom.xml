@@ -4,7 +4,7 @@
   <title><![CDATA[Venkatesh CM]]></title>
   <link href="http://venkateshcm.github.io/atom.xml" rel="self"/>
   <link href="http://venkateshcm.github.io/"/>
-  <updated>2014-05-05T20:13:17+05:30</updated>
+  <updated>2014-05-05T20:16:30+05:30</updated>
   <id>http://venkateshcm.github.io/</id>
   <author>
     <name><![CDATA[Venkatesh CM]]></name>
@@ -30,7 +30,7 @@
 </ul>
 
 
-<p>Determining thread pool size for an web application will be covered in next blog.</p>
+<p>Determining optimal thread pool size of an web application will be covered in next blog.</p>
 
 <p><b><i>Performance</i></b></p>
 
@@ -146,7 +146,7 @@ Performance tuning or scaling IO bound applications is a difficult job due to it
 </ul>
 
 
-<p>Next blog will cover determining Thread Pool size for an web application.</p>
+<p>Next blog will cover determining optimal thread pool size of an web application.</p>
 ]]></content>
   </entry>
   
