@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Testing | Venkatesh CM]]></title>
   <link href="http://venkateshcm.github.io/blog/categories/testing/atom.xml" rel="self"/>
   <link href="http://venkateshcm.github.io/"/>
-  <updated>2014-05-05T20:28:21+05:30</updated>
+  <updated>2014-05-05T22:57:30+05:30</updated>
   <id>http://venkateshcm.github.io/</id>
   <author>
     <name><![CDATA[Venkatesh CM]]></name>
@@ -96,7 +96,7 @@ increasing the number of boxes.</li>
 
 <ul>
 <li><p>Vertically splitting (Partitioning) :&ndash; Database can be split into multiple loosely coupled sub-databases based of domain concepts. Eg:&ndash; Customer database, Product Database etc. Another way to split database is by moving few columns of an entity to one database and few other columns to another database. Eg:&ndash; Customer database , Customer contact Info database, Customer Orders database etc.</p></li>
-<li><p>Horizontally splitting (Sharding) :&ndash; Database can be horizontally split into multiple database few discrete attributes. Eg:&ndash;  American Customers database, European Customers database.</p></li>
+<li><p>Horizontally splitting (Sharding) :&ndash; Database can be horizontally split into multiple database based on some discrete attribute. Eg:&ndash;  American Customers database, European Customers database.</p></li>
 </ul>
 
 
