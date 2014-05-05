@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Performance | Venkatesh CM]]></title>
+  <link href="http://venkateshcm.github.io/blog/categories/performance/atom.xml" rel="self"/>
+  <link href="http://venkateshcm.github.io/"/>
+  <updated>2014-05-05T20:06:39+05:30</updated>
+  <id>http://venkateshcm.github.io/</id>
+  <author>
+    <name><![CDATA[Venkatesh CM]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Scaling and Performance Tuning Web Applications]]></title>
+    <link href="http://venkateshcm.github.io/2014/05/Scaling-Web-Applications/"/>
+    <updated>2014-05-05T00:00:00+05:30</updated>
+    <id>http://venkateshcm.github.io/2014/05/Scaling-Web-Applications</id>
+    <content type="html"><![CDATA[<p>I will cover architecture issues that show up while scaling and performance tuning large scale web application in this blog.</p>
+
+<p>Lets start by defining few terms to create common understanding and vocabulary. Later on I will go through different issues that pop-up while scaling web application like</p>
+
+<ul>
+<li>Architecture bottlenecks</li>
+<li>Scaling Database</li>
+<li>CPU Bound Application</li>
+<li>IO Bound Application</li>
+</ul>
+
+
+<p>Determining thread pool size for an web application will be covered in next blog.</p>
+
+<p><b><i>Performance</i></b></p>
+
+<p>Term performance of web application is used to mean several things. Most developers are primarily concerned with are response time and scalability.</p>
+
+<ul>
+<li><p><h5>Response Time</h5></p>
+
+<p>Is the time taken by web application to process request and return response. Applications should respond to requests (response time) within acceptable duration. If application is taking beyond the acceptable time, it is said to be non-performing or degraded.</p></li>
+<li><p><h5>Scalability</h5></p>
+
+<p>The web application is said to be scalable if by adding more hardware, application can linearly take more requests than before. Two ways of adding more hardware are</p>
+
+<ul>
+<li><b>Scaling Up (vertical scaling)</b> :&ndash;
+increasing the number CPUs or adding faster CPUs on a single box.</li>
+<li><b>Scaling Out (horizontal scaling)</b> :&ndash;
+increasing the number of boxes.</li>
+</ul>
+</li>
+</ul>
+
+
+<p><b><i>Scaling Up Vs Scaling Out</i></b></p>
+
+<p>Scaling out is considered more important as commodity hardware is cheaper compared to cost of special configuration hardware (super computer). But increasing the number of requests that an application can handle on a single commodity hardware box is also important. An application is said to be performing well if it can handle more requests with-out degrading response time by just adding more resources.</p>
+
+<p><b><i>Response time Vs Scalability</i></b></p>
+
+<p>Response time and Scalability don&rsquo;t aways go together i.e. application might have acceptable response times but can not handle more than certain number of requests or application is handle increasing number of requests but has poor or long response times. We have strike a balance between scalability and response time to get good performance of the application.</p>
+
+<p><b><i>Capacity Planning</i></b></p>
+
+<p>Capacity planning is an exercise of figuring out the required hardware to handle expected load in production. Usually it involves figuring out performance of application with fewer boxes and based on performance per box projecting it. Finally verifying it with load/performance tests.</p>
+
+<p><b><i>Scalable Architecture</i></b></p>
+
+<p>Application architecture is scalable if each layer in multi layered architecture is scalable (scale out). For example :&ndash; As shown in diagram below we should be able linearly scale by add additional box in Application Layer or Database Layer.</p>
+
+<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.github.io/img/blog/scaling.png" class="" style="display: inline-block;"></p>
+
+<p>Adding multiple Load balancers is rare as a single box running nginx or HAProxy can handle more than 20K concurrent connections per box compared to web application boxes which can handle few thousand concurrent requests. So a single load balancer box can handle several web application boxes.</p>
+
+<p><b><i>Scaling Database</i></b></p>
+
+<p>Scaling database is one of the most common issues faced. Adding business logic (stored procedure, functions) in database layer brings in additional overhead and complexity.</p>
+
+<p><b>RDBMS</b></p>
+
+<p>RDBMS database can be scaled by having master-slave mode with read/writes on master database and only reads on slave databases. Master-Slave provides limited scaling of reads beyond which developers has to split the database into multiple databases.</p>
+
+<p><b>NoSQL</b></p>
+
+<p><a href="http://en.wikipedia.org/wiki/CAP_theorem">CAP theorem</a> has shown that is not possible to get Consistency, Availability and Partition tolerance simultaneously. NoSql databases usually compromise on consistency to get high availability and partition.</p>
+
+<p><b>Splitting database</b></p>
+
+<p>Database can be split vertically (Partitioning) or horizontally (Sharding).</p>
+
+<ul>
+<li><p>Vertically splitting (Partitioning) :&ndash; Database can be split into multiple loosely coupled sub-databases based of domain concepts. Eg:&ndash; Customer database, Product Database etc. Another way to split database is by moving few columns of an entity to one database and few other columns to another database. Eg:&ndash; Customer database , Customer contact Info database, Customer Orders database etc.</p></li>
+<li><p>Horizontally splitting (Sharding) :&ndash; Database can be horizontally split into multiple database few discrete attributes. Eg:&ndash;  American Customers database, European Customers database.</p></li>
+</ul>
+
+
+<p>Transiting from single database to multiple database using partitioning or sharding is a challenging task.</p>
+
+<p><b><i>Architecture bottlenecks</i></b></p>
+
+<p>Scaling bottlenecks are formed due to two issues</p>
+
+<ul>
+<li><p><b>Centralised component</b>
+A component in application architecture which can not be scaled out adds an upper limit on number of requests that entire architecture or request pipeline can handle.</p></li>
+<li><p><b>High latency component</b>
+A slow component in request pipeline puts lower limit on the response time of the application. Usual solution to fix this issue is to make high latency components into background jobs or executing them asynchronously with queuing.</p></li>
+</ul>
+
+
+<p><b><i>CPU Bound Application</i></b></p>
+
+<p>An application is said to be CPU bound if application throughput is limited by its CPU. By increasing CPU speed application response time can be reduced.</p>
+
+<p>Few scenarios where applications could be CPU Bound</p>
+
+<ul>
+<li>Applications which are computing or processing data with out performing IO operations. (Finance or Trading Applications)</li>
+<li>Applications which use cache heavily and don&rsquo;t perform any IO operations</li>
+<li>Applications which are asynchronous (i.e. Non Blocking), don&rsquo;t wait on external resources. (Reactive Pattern Applications, NodeJS application)</li>
+</ul>
+
+
+<p>In the above scenarios application is already working in efficiently but in few instances applications with badly written or inefficient code which perform unnecessary heavy calculations or looping on every request tend to show high CPU usage. By profiling application it is easy to figure out the inefficiencies and fix them.</p>
+
+<p>These issues can be fixed by</p>
+
+<ul>
+<li>Caching precomputing values</li>
+<li>Performing the computation in separate background job.</li>
+</ul>
+
+
+<p><b><i>IO Bound Application</i></b></p>
+
+<p>An application is said to be IO bound if application throughput is limited by its IO or network operations and increasing CPU speed does not bring down application response times. Most applications are IO bound due to the CRUD operation in most applications
+Performance tuning or scaling IO bound applications is a difficult job due to its dependency on other systems downstream.</p>
+
+<p>Few scenarios where applications could be IO Bound</p>
+
+<ul>
+<li>Applications which are depended on database and perform CRUD operations</li>
+<li>Applications which consume drown stream web services for performing its operations</li>
+</ul>
+
+
+<p>Next blog will cover determining Thread Pool size for an web application.</p>
+]]></content>
+  </entry>
+  
+</feed>
