@@ -4,7 +4,7 @@
   <title><![CDATA[Venkatesh CM]]></title>
   <link href="http://venkateshcm.github.io/atom.xml" rel="self"/>
   <link href="http://venkateshcm.github.io/"/>
-  <updated>2014-05-05T20:16:30+05:30</updated>
+  <updated>2014-05-05T20:28:21+05:30</updated>
   <id>http://venkateshcm.github.io/</id>
   <author>
     <name><![CDATA[Venkatesh CM]]></name>
@@ -14,10 +14,10 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Scaling and Performance Tuning Web Applications]]></title>
-    <link href="http://venkateshcm.github.io/2014/05/Scaling-Web-Applications/"/>
+    <title type="html"><![CDATA[Architecture Issues Scaling Web Applications]]></title>
+    <link href="http://venkateshcm.github.io/2014/05/Architecture-Issues-Scaling-Web-Applications/"/>
     <updated>2014-05-05T00:00:00+05:30</updated>
-    <id>http://venkateshcm.github.io/2014/05/Scaling-Web-Applications</id>
+    <id>http://venkateshcm.github.io/2014/05/Architecture-Issues-Scaling-Web-Applications</id>
     <content type="html"><![CDATA[<p>I will cover architecture issues that show up while scaling and performance tuning large scale web application in this blog.</p>
 
 <p>Lets start by defining few terms to create common understanding and vocabulary. Later on I will go through different issues that pop-up while scaling web application like</p>
@@ -71,6 +71,10 @@ increasing the number of boxes.</li>
 <p>Application architecture is scalable if each layer in multi layered architecture is scalable (scale out). For example :&ndash; As shown in diagram below we should be able linearly scale by add additional box in Application Layer or Database Layer.</p>
 
 <p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.github.io/img/blog/scaling.png" class="" style="display: inline-block;"></p>
+
+<p><b><i>Scaling Load Balancer</i></b></p>
+
+<p>Load balancers can be scaled out by point DNS to multiple IP addresses and using DNS Round Robin for IP address lookup. Other option is to front another load balancer which distributes load to next level load balancers.</p>
 
 <p>Adding multiple Load balancers is rare as a single box running nginx or HAProxy can handle more than 20K concurrent connections per box compared to web application boxes which can handle few thousand concurrent requests. So a single load balancer box can handle several web application boxes.</p>
 
