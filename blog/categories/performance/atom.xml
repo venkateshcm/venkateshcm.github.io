@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Performance | Venkatesh CM]]></title>
   <link href="http://venkateshcm.github.io/blog/categories/performance/atom.xml" rel="self"/>
   <link href="http://venkateshcm.github.io/"/>
-  <updated>2014-05-10T06:08:12+05:30</updated>
+  <updated>2014-05-10T06:12:35+05:30</updated>
   <id>http://venkateshcm.github.io/</id>
   <author>
     <name><![CDATA[Venkatesh CM]]></name>
@@ -100,10 +100,12 @@ Application threads get blocked waiting for down stream systems to respond. Resp
 
 <p><b><i>Thread Pool isolation</i></b></p>
 
-<p>In most web applications few types of web request take much longer to process than other web request types.The slower web requests might bring down entire application. Couple of ways to handle this issue is</p>
+<p>In most web applications, few types of web request take much longer to process than other web request types.The slower web requests might hog all threads and bring down entire application.</p>
+
+<p>Couple of ways to handle this issue is</p>
 
 <ul>
-<li>to have separate box to slow web requests.</li>
+<li>to have separate box to handle slow web requests.</li>
 <li>to allocate a separate thread pool for slow web requests within the same application.</li>
 </ul>
 
