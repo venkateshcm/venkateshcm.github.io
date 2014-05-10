@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Scalability | Venkatesh CM]]></title>
   <link href="http://venkateshcm.github.io/blog/categories/scalability/atom.xml" rel="self"/>
   <link href="http://venkateshcm.github.io/"/>
-  <updated>2014-05-06T12:57:30+05:30</updated>
+  <updated>2014-05-10T06:08:12+05:30</updated>
   <id>http://venkateshcm.github.io/</id>
   <author>
     <name><![CDATA[Venkatesh CM]]></name>
@@ -12,6 +12,105 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[How To Determine Web Application Thread Pool Size]]></title>
+    <link href="http://venkateshcm.github.io/2014/05/How-To-Determine-Web-Applications-Thread-Poll-Size/"/>
+    <updated>2014-05-10T00:00:00+05:30</updated>
+    <id>http://venkateshcm.github.io/2014/05/How-To-Determine-Web-Applications-Thread-Poll-Size</id>
+    <content type="html"><![CDATA[<p>Continuing on <a href="/2014/05/Architecture-Issues-Scaling-Web-Applications/">Architectural Issues faced while scaling web applications</a>, in this blog I will cover a common issue, how to determine web application thread pool size?, that shows up while deploying web applications to production or while performance testing web applications.</p>
+
+<p><b><i>Thread Pool</i></b></p>
+
+<p>In web applications thread pool size determines the number of concurrent requests that can be handled at any given time. If a web application gets more than thread pool size requests, they are either queued or rejected.</p>
+
+<p>Please note concurrent is not same as parallel. Concurrent requests are number of requests being processed while only few of them could be running on CPUs at any point of time. Parallel requests are number of requests being processed while all of them are running on CPUs at any point of time.</p>
+
+<p>In Non-blocking IO applications such as NodeJS, a single thread (process) can handles multiple requests concurrently. In multi-core CPUs boxes, parallel requests can be handled by increasing number of threads or processes.</p>
+
+<p>In blocking IO applications such as Java SpringMVC, a single thread can handle only one request concurrently. To handle more than one request concurrently we have to increase the number of threads.</p>
+
+<p><b><i>CPU Bound Applications</i></b></p>
+
+<p> In CPU bound applications thread Pool size should be equal number of cpus on the box. Adding more threads would interrupt request processing due to thread context switching and also increases response time.</p>
+
+<p> Non-blocking IO applications will be CPU bound as there are no thread wait time while requests get processed.</p>
+
+<p><b><i>IO Bound Applications</i></b></p>
+
+<p>Determining thread pool size of IO bound application is lot more complicated and depends on response time of down stream systems, since a thread is blocked until other system responds. We would have to increase the number of threads to better utilise CPU as discussed in <a href="/2014/04/Reactor-Pattern-Part-1-Non-blocking-I-O/">Reactor Pattern Part 1 : Applications with Blocking I/O</a>.</p>
+
+<p><b><i>Little&rsquo;s law</i></b></p>
+
+<p>Little&rsquo;s law was used in non technology fields like banks to figure out number of bank teller counters required to handle incoming bank customers.</p>
+
+<p><b><a href="http://en.wikipedia.org/wiki/Little's_law">Little&rsquo;s law</a></b></p>
+
+<pre><code>The long-term average number of customers in a stable system L is equal to the long-term 
+average effective arrival rate, λ, multiplied by the average time a customer spends 
+in the system, W; or expressed algebraically: 
+L = λW.
+</code></pre>
+
+<p><b>Little&rsquo;s law applied to web applications</b></p>
+
+<pre><code>The average number of threads in a system (Threads) is equal average web request 
+arrival rate (WebRequests per sec), multiplied by the average response time (ResponseTime)
+</code></pre>
+
+<p>Threads = Number of Threads <br/>
+WebRequests per sec = Number of Web Requests that can be processed in one second <br/>
+ResponseTime = Time taken to process one web request <br/></p>
+
+<pre><code>Threads = (WebRequests/sec) X ResponseTime
+</code></pre>
+
+<p>While the above equation provides the number of threads required to handle incoming requests, it does not provide information on the threads to cpu ratio i.e. how many threads should be allocated on a given box with x CPUs.</p>
+
+<p><b><i>Testing to determining Thread Pool size</i></b></p>
+
+<p>To find right thread pool size is to balance between throughput and response time. Starting with minimum a thread per cpu (Threads Pool Size = No of CPUs) , application thread pool size is directly proportional to the average response time of down stream systems until CPU usage is maxed out or response time is not degraded.</p>
+
+<p>Below diagrams illustrate how number of requests, CPU and Response Time metrics are connected.</p>
+
+<p>CPU Vs Number of Requests graph shows how CPU usage while increasing load on the web applications.</p>
+
+<p>Response Time Vs Number of Requests graph shows response time impact due to increasing load on the web applications.</p>
+
+<p>Green dot indicates point of optimal throughput and response time.</p>
+
+<p><b>Thread pool size = Number of CPUs</b></p>
+
+<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.github.io/img/blog/MinimumThreads.png" class="" style="display: inline-block;"></p>
+
+<p>Above diagram depicts blocking IO bound applications when number of threads is equal to number cpus.
+Application threads get blocked waiting for down stream systems to respond. Response time increases as requests get queued since threads are blocked. Application starts rejecting requests as all threads are blocked even though CPU usage is very low.</p>
+
+<p><b>Large Thread pool size</b></p>
+
+<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.github.io/img/blog/MaximumThreads.png" class="" style="display: inline-block;"></p>
+
+<p>Above diagram depicts blocking IO bound applications when large number of threads are created in web application. Due to large number of threads, thread context switching will be very frequent. Application CPU usage gets maxed out even though throughput has not increased due to unnecessary thread context switching. Response Time degrades since requests are interrupted with context switching.</p>
+
+<p><b>Optimal Thread pool size</b></p>
+
+<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.github.io/img/blog/OptimalThreads.png" class="" style="display: inline-block;"></p>
+
+<p>Above diagram depicts blocking IO bound applications when optimal number of threads are created in web application. CPU gets efficiently used with good throughput and fewer thread context switching. We notice good response time due to efficient request processing with fewer interrupts (context switching).</p>
+
+<p><b><i>Thread Pool isolation</i></b></p>
+
+<p>In most web applications few types of web request take much longer to process than other web request types.The slower web requests might bring down entire application. Couple of ways to handle this issue is</p>
+
+<ul>
+<li>to have separate box to slow web requests.</li>
+<li>to allocate a separate thread pool for slow web requests within the same application.</li>
+</ul>
+
+
+<p>Determining optimal thread pool size of a blocking IO web application is difficult task. Usually done by performing several performance runs. Having several thread pools in a web application further complicates the process of determining optimal thread pool size.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Architecture Issues Scaling Web Applications]]></title>
@@ -30,7 +129,7 @@
 </ul>
 
 
-<p>Determining optimal thread pool size of an web application will be covered in next blog.</p>
+<p><a href="/2014/05/How-To-Determine-Web-Applications-Thread-Poll-Size/">Determining optimal thread pool size of an web application</a> will be covered in next blog.</p>
 
 <p><b><i>Performance</i></b></p>
 
@@ -150,7 +249,7 @@ Performance tuning or scaling IO bound applications is a difficult job due to it
 </ul>
 
 
-<p>Next blog will cover determining optimal thread pool size of an web application.</p>
+<p>Next blog will cover <a href="/2014/05/How-To-Determine-Web-Applications-Thread-Poll-Size/">how to determining optimal thread pool size of an web application</a>.</p>
 ]]></content>
   </entry>
   
@@ -1043,55 +1142,6 @@ Performance tuning or scaling IO bound applications is a difficult job due to it
 
 
 <p>Some of the disadvantages can be mitigated by using fiber (ruby fibers, node fibers), will cover Fibers in another blog.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Reactor Pattern Part 1 - Applications with Blocking I/O]]></title>
-    <link href="http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-1-Non-blocking-I-O/"/>
-    <updated>2014-04-09T00:00:00+05:30</updated>
-    <id>http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-1-Non-blocking-I-O</id>
-    <content type="html"><![CDATA[<br/>
-
-
-<p><b><i>Applications with Blocking I/O</i></b></p>
-
-<p>I am assuming a simple scenario of single threaded application like Ruby on Rails Application running on a computer with single CPU. In real world, OS splits CPU time to multiple applications and does a regular context switching.</p>
-
-<p>In a single threaded application like Ruby on Rails Applications, requests are processed by a single thread. When the thread makes a I/O bound call like database query or network call, application/thread is blocked even though it could be used to work on other requests.</p>
-
-<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.github.io/img/blog/SingleThread.png" class="" style="display: inline-block;"></p>
-
-<p>A solution to get around the above problem is to have multiple applications running on the same box. So when one application&rsquo;s thread is blocked another application&rsquo;s thread can proceed with another request processing. In below diagram there are two applications competing for CPU time and second application consumes CPU between a2 and a1 time. But we still see that CPU is idle between a1 and t1 and between t2 and a2.</p>
-
-<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.github.io/img/blog/TwoThreads.png" class="" style="display: inline-block;"></p>
-
-<p>To avoid any idle time on CPU we can add more applications, but this will lead to unnecessary context switch which will degrade performance further. For example in the diagram below, third application is switched with second application while third application is still processing a request and needs CPU time.</p>
-
-<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.github.io/img/blog/ThreeThreads.png" class="" style="display: inline-block;"></p>
-
-<p>As shown in the above diagram, we can notice two issues</p>
-
-<ul>
-<li>OS switches CPU from an application which needs CPU for processing.</li>
-<li>OS switches CPU to an application which is still waiting for IO.</li>
-</ul>
-
-
-<p>These two issues are due to pre-emptive thread switching. To achieve optimal CPU allocation, application should be able to request for CPU time or give-up CPU time in a cooperative manner instead of pre-emptive switching.</p>
-
-<p><b><i>C10K Problem</i></b></p>
-
-<p>Early in 2000, a single server could not handle more than 10000 connections at a time. It was a limitation under which applications worked and developers were not able to exceed 10000 connections limit on a single box. The solution that was found is to use nonblocking I/O on each thread i.e. Non-blocking IO stared as a scalability soultion to <a href="http://en.wikipedia.org/wiki/C10k_problem">C10K Problem</a>.</p>
-
-<p>Reactor Pattern provides an work around for the above problem using epoll.</p>
-
-<ul>
-<li><a href="http://en.wikipedia.org/wiki/Nonpreemptive_multitasking">http://en.wikipedia.org/wiki/Nonpreemptive_multitasking</a></li>
-<li><a href="http://en.wikipedia.org/wiki/Preemption_(computing">http://en.wikipedia.org/wiki/Preemption_(computing)</a></li>
-<li><a href="http://en.wikipedia.org/wiki/Reactor_pattern">http://en.wikipedia.org/wiki/Reactor_pattern</a></li>
-</ul>
-
 ]]></content>
   </entry>
   
