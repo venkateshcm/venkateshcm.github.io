@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Testing | Venkatesh CM]]></title>
   <link href="http://venkateshcm.github.io/blog/categories/testing/atom.xml" rel="self"/>
   <link href="http://venkateshcm.github.io/"/>
-  <updated>2014-05-10T06:12:35+05:30</updated>
+  <updated>2014-05-11T22:51:42+05:30</updated>
   <id>http://venkateshcm.github.io/</id>
   <author>
     <name><![CDATA[Venkatesh CM]]></name>
@@ -22,7 +22,7 @@
 
 <p><b><i>Thread Pool</i></b></p>
 
-<p>In web applications thread pool size determines the number of concurrent requests that can be handled at any given time. If a web application gets more than thread pool size requests, they are either queued or rejected.</p>
+<p>In web applications thread pool size determines the number of concurrent requests that can be handled at any given time. If a web application gets more requests than thread pool size, excess requests are either queued or rejected.</p>
 
 <p>Please note concurrent is not same as parallel. Concurrent requests are number of requests being processed while only few of them could be running on CPUs at any point of time. Parallel requests are number of requests being processed while all of them are running on CPUs at any point of time.</p>
 
@@ -135,7 +135,7 @@ Application threads get blocked waiting for down stream systems to respond. Resp
 
 <p><b><i>Performance</i></b></p>
 
-<p>Term performance of web application is used to mean several things. Most developers are primarily concerned with are response time and scalability.</p>
+<p>Term performance of web application is used to mean several things. Most developers are primarily concerned with response time and scalability.</p>
 
 <ul>
 <li><p><h5>Response Time</h5></p>
@@ -143,7 +143,7 @@ Application threads get blocked waiting for down stream systems to respond. Resp
 <p>Is the time taken by web application to process request and return response. Applications should respond to requests (response time) within acceptable duration. If application is taking beyond the acceptable time, it is said to be non-performing or degraded.</p></li>
 <li><p><h5>Scalability</h5></p>
 
-<p>The web application is said to be scalable if by adding more hardware, application can linearly take more requests than before. Two ways of adding more hardware are</p>
+<p>Web application is said to be scalable if by adding more hardware, application can linearly take more requests than before. Two ways of adding more hardware are</p>
 
 <ul>
 <li><b>Scaling Up (vertical scaling)</b> :&ndash;
@@ -161,7 +161,7 @@ increasing the number of boxes.</li>
 
 <p><b><i>Response time Vs Scalability</i></b></p>
 
-<p>Response time and Scalability don&rsquo;t aways go together i.e. application might have acceptable response times but can not handle more than certain number of requests or application is handle increasing number of requests but has poor or long response times. We have strike a balance between scalability and response time to get good performance of the application.</p>
+<p>Response time and Scalability don&rsquo;t always go together i.e. application might have acceptable response times but can not handle more than certain number of requests or application is handle increasing number of requests but has poor or long response times. We have strike a balance between scalability and response time to get good performance of the application.</p>
 
 <p><b><i>Capacity Planning</i></b></p>
 
