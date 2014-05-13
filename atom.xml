@@ -4,7 +4,7 @@
   <title><![CDATA[Venkatesh CM]]></title>
   <link href="http://venkateshcm.github.io/atom.xml" rel="self"/>
   <link href="http://venkateshcm.github.io/"/>
-  <updated>2014-05-11T22:51:42+05:30</updated>
+  <updated>2014-05-13T07:07:31+05:30</updated>
   <id>http://venkateshcm.github.io/</id>
   <author>
     <name><![CDATA[Venkatesh CM]]></name>
@@ -161,7 +161,7 @@ increasing the number of boxes.</li>
 
 <p><b><i>Response time Vs Scalability</i></b></p>
 
-<p>Response time and Scalability don&rsquo;t always go together i.e. application might have acceptable response times but can not handle more than certain number of requests or application is handle increasing number of requests but has poor or long response times. We have strike a balance between scalability and response time to get good performance of the application.</p>
+<p>Response time and Scalability don&rsquo;t always go together i.e. application might have acceptable response times but may not handle more than certain number of requests or application can handle increasing number of requests but has poor or long response times. We have to strike a balance between scalability and response time to get good performance of the application.</p>
 
 <p><b><i>Capacity Planning</i></b></p>
 
@@ -1070,7 +1070,7 @@ The Zen of Python, by Tim Peters
 
 <p>Async or Non-blocking IO introduces new challenges on how applications should to be structured and how async call backs can be abstracted away using promises like library. We need Non-blocking IO application since, sequencial blocking IO applications are not scalable. So Non-Blocking IO or Asynchronous code is not a desired feature but a nessesary evil to achive scalability.</p>
 
-<p>Finally, assumption that Non-blocking IO and Asynchronous code are clubed together and one comes with other. Is it possible to get the best of both the worlds, i.e. Sequential code and Non-Blocking IO scalability. In fact, I think there is an option based on Fibers which can provide best of both the worlds. I will cover Fibers and how they achive both Non-Blocking IO and Sequential codebase in the next blog.</p>
+<p>Finally, assumption that Non-blocking IO and Asynchronous code are clubed together and one comes with other. Is it possible to get the best of both the worlds, i.e. Sequential code and Non-Blocking IO scalability. In fact, I think there is an option based on Fibers which can provide best of both the worlds. I will cover <a href="http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-4-Write-Sequential-Non-Blocking-IO-Code-With-Fibers-In-NodeJS/">Fibers and how they achive both Non-Blocking IO and Sequential codebase</a> in the next blog.</p>
 ]]></content>
   </entry>
   

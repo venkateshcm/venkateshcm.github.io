@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Performance | Venkatesh CM]]></title>
   <link href="http://venkateshcm.github.io/blog/categories/performance/atom.xml" rel="self"/>
   <link href="http://venkateshcm.github.io/"/>
-  <updated>2014-05-11T22:51:42+05:30</updated>
+  <updated>2014-05-13T07:07:31+05:30</updated>
   <id>http://venkateshcm.github.io/</id>
   <author>
     <name><![CDATA[Venkatesh CM]]></name>
@@ -161,7 +161,7 @@ increasing the number of boxes.</li>
 
 <p><b><i>Response time Vs Scalability</i></b></p>
 
-<p>Response time and Scalability don&rsquo;t always go together i.e. application might have acceptable response times but can not handle more than certain number of requests or application is handle increasing number of requests but has poor or long response times. We have strike a balance between scalability and response time to get good performance of the application.</p>
+<p>Response time and Scalability don&rsquo;t always go together i.e. application might have acceptable response times but may not handle more than certain number of requests or application can handle increasing number of requests but has poor or long response times. We have to strike a balance between scalability and response time to get good performance of the application.</p>
 
 <p><b><i>Capacity Planning</i></b></p>
 
