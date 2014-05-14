@@ -1,4 +1,4 @@
 User-agent: *
 Disallow: 
 
-Sitemap: http://venkateshcm.github.io/sitemap.xml 
+Sitemap: http://venkateshcm.com/sitemap.xml 

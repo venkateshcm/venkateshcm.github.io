@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: Web Service | Venkatesh CM]]></title>
-  <link href="http://venkateshcm.github.io/blog/categories/web-service/atom.xml" rel="self"/>
-  <link href="http://venkateshcm.github.io/"/>
-  <updated>2014-05-13T07:47:06+05:30</updated>
-  <id>http://venkateshcm.github.io/</id>
+  <link href="http://venkateshcm.com/blog/categories/web-service/atom.xml" rel="self"/>
+  <link href="http://venkateshcm.com/"/>
+  <updated>2014-05-14T15:13:57+05:30</updated>
+  <id>http://venkateshcm.com/</id>
   <author>
     <name><![CDATA[Venkatesh CM]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Guidelines on Restful Web Services]]></title>
-    <link href="http://venkateshcm.github.io/2014/04/Guidelines-Restful-Web-Services/"/>
+    <link href="http://venkateshcm.com/2014/04/Guidelines-Restful-Web-Services/"/>
     <updated>2014-04-08T00:00:00+05:30</updated>
-    <id>http://venkateshcm.github.io/2014/04/Guidelines-Restful-Web-Services</id>
+    <id>http://venkateshcm.com/2014/04/Guidelines-Restful-Web-Services</id>
     <content type="html"><![CDATA[<p><p><b><i>Guidelines to get Restful Web Services right</i></b><p></p>
 
 <p><b><i>Uniform Resource handling</i></b></p>

@@ -1,71 +1,69 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
-        <loc>http://venkateshcm.github.io/2014/04/How-What-And-Why-of-Software-Development/</loc>
+        <loc>http://venkateshcm.com/2014/04/How-What-And-Why-of-Software-Development/</loc>
         <lastmod>2014-05-13T07:46:16+05:30</lastmod>
     </url>
     <url>
-        <loc>http://venkateshcm.github.io/2014/04/Guidelines-Restful-Web-Services/</loc>
+        <loc>http://venkateshcm.com/2014/04/Guidelines-Restful-Web-Services/</loc>
         <lastmod>2014-05-13T07:46:16+05:30</lastmod>
     </url>
     <url>
-        <loc>http://venkateshcm.github.io/2014/04/silver-bullet-solution/</loc>
+        <loc>http://venkateshcm.com/2014/04/silver-bullet-solution/</loc>
         <lastmod>2014-05-13T07:46:16+05:30</lastmod>
     </url>
     <url>
-        <loc>http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-1-Non-blocking-I-O/</loc>
+        <loc>http://venkateshcm.com/2014/04/Reactor-Pattern-Part-1-Non-blocking-I-O/</loc>
         <lastmod>2014-05-13T07:46:16+05:30</lastmod>
     </url>
     <url>
-        <loc>http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-2-Non-blocking-I-O/</loc>
+        <loc>http://venkateshcm.com/2014/04/Reactor-Pattern-Part-2-Non-blocking-I-O/</loc>
         <lastmod>2014-05-13T07:46:16+05:30</lastmod>
     </url>
     <url>
-        <loc>http://venkateshcm.github.io/2014/04/Zen-Of-Software-Design-Part-1/</loc>
-        <lastmod>2014-05-13T07:46:16+05:30</lastmod>
-    </url>
-    <url>
-        <loc>
-            http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-3-Promises-to-solve-callback-hell/
-        </loc>
+        <loc>http://venkateshcm.com/2014/04/Zen-Of-Software-Design-Part-1/</loc>
         <lastmod>2014-05-13T07:46:16+05:30</lastmod>
     </url>
     <url>
         <loc>
-            http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-4-Write-Sequential-Non-Blocking-IO-Code-With-Fibers-In-NodeJS/
+            http://venkateshcm.com/2014/04/Reactor-Pattern-Part-3-Promises-to-solve-callback-hell/
+        </loc>
+        <lastmod>2014-05-14T10:16:05+05:30</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://venkateshcm.com/2014/04/Reactor-Pattern-Part-4-Write-Sequential-Non-Blocking-IO-Code-With-Fibers-In-NodeJS/
         </loc>
         <lastmod>2014-05-13T07:46:16+05:30</lastmod>
     </url>
     <url>
-        <loc>http://venkateshcm.github.io/2014/04/Zen-Of-Software-Design-Part-2/</loc>
+        <loc>http://venkateshcm.com/2014/04/Zen-Of-Software-Design-Part-2/</loc>
+        <lastmod>2014-05-13T07:46:16+05:30</lastmod>
+    </url>
+    <url>
+        <loc>http://venkateshcm.com/2014/05/Architecture-Issues-Scaling-Web-Applications/</loc>
         <lastmod>2014-05-13T07:46:16+05:30</lastmod>
     </url>
     <url>
         <loc>
-            http://venkateshcm.github.io/2014/05/Architecture-Issues-Scaling-Web-Applications/
+            http://venkateshcm.com/2014/05/How-To-Determine-Web-Applications-Thread-Poll-Size/
         </loc>
         <lastmod>2014-05-13T07:46:16+05:30</lastmod>
     </url>
     <url>
-        <loc>
-            http://venkateshcm.github.io/2014/05/How-To-Determine-Web-Applications-Thread-Poll-Size/
-        </loc>
-        <lastmod>2014-05-13T07:46:16+05:30</lastmod>
+        <loc>http://venkateshcm.com/about/</loc>
+        <lastmod>2014-05-14T10:19:37+05:30</lastmod>
     </url>
     <url>
-        <loc>http://venkateshcm.github.io/about/</loc>
-        <lastmod>2014-05-06T12:55:37+05:30</lastmod>
+        <loc>http://venkateshcm.com/blog/archives/</loc>
+        <lastmod>2014-05-14T10:16:05+05:30</lastmod>
     </url>
     <url>
-        <loc>http://venkateshcm.github.io/blog/archives/</loc>
-        <lastmod>2014-05-13T07:06:33+05:30</lastmod>
+        <loc>http://venkateshcm.com/</loc>
+        <lastmod>2014-05-14T10:16:05+05:30</lastmod>
     </url>
     <url>
-        <loc>http://venkateshcm.github.io/</loc>
-        <lastmod>2014-05-13T07:06:33+05:30</lastmod>
-    </url>
-    <url>
-        <loc>http://venkateshcm.github.io/robots.txt</loc>
+        <loc>http://venkateshcm.com/robots.txt</loc>
         <lastmod>2014-04-23T15:57:22+05:30</lastmod>
     </url>
 </urlset>

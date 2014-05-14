@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Venkatesh CM]]></title>
-  <link href="http://venkateshcm.github.io/atom.xml" rel="self"/>
-  <link href="http://venkateshcm.github.io/"/>
-  <updated>2014-05-13T07:47:06+05:30</updated>
-  <id>http://venkateshcm.github.io/</id>
+  <link href="http://venkateshcm.com/atom.xml" rel="self"/>
+  <link href="http://venkateshcm.com/"/>
+  <updated>2014-05-14T15:13:57+05:30</updated>
+  <id>http://venkateshcm.com/</id>
   <author>
     <name><![CDATA[Venkatesh CM]]></name>
     
@@ -15,10 +15,10 @@
   
   <entry>
     <title type="html"><![CDATA[How To Determine Web Application Thread Pool Size]]></title>
-    <link href="http://venkateshcm.github.io/2014/05/How-To-Determine-Web-Applications-Thread-Poll-Size/"/>
+    <link href="http://venkateshcm.com/2014/05/How-To-Determine-Web-Applications-Thread-Poll-Size/"/>
     <updated>2014-05-10T00:00:00+05:30</updated>
-    <id>http://venkateshcm.github.io/2014/05/How-To-Determine-Web-Applications-Thread-Poll-Size</id>
-    <content type="html"><![CDATA[<p>Continuing on <a href="http://venkateshcm.github.io/2014/05/Architecture-Issues-Scaling-Web-Applications/">Architectural Issues faced while scaling web applications</a>, in this blog I will cover a common issue, how to determine web application thread pool size?, that shows up while deploying web applications to production or while performance testing web applications.</p>
+    <id>http://venkateshcm.com/2014/05/How-To-Determine-Web-Applications-Thread-Poll-Size</id>
+    <content type="html"><![CDATA[<p>Continuing on <a href="http://venkateshcm.com/2014/05/Architecture-Issues-Scaling-Web-Applications/">Architectural Issues faced while scaling web applications</a>, in this blog I will cover a common issue, how to determine web application thread pool size?, that shows up while deploying web applications to production or while performance testing web applications.</p>
 
 <p><b><i>Thread Pool</i></b></p>
 
@@ -38,7 +38,7 @@
 
 <p><b><i>IO Bound Applications</i></b></p>
 
-<p>Determining thread pool size of IO bound application is lot more complicated and depends on response time of down stream systems, since a thread is blocked until other system responds. We would have to increase the number of threads to better utilise CPU as discussed in <a href="http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-1-Non-blocking-I-O/">Reactor Pattern Part 1 : Applications with Blocking I/O</a>.</p>
+<p>Determining thread pool size of IO bound application is lot more complicated and depends on response time of down stream systems, since a thread is blocked until other system responds. We would have to increase the number of threads to better utilise CPU as discussed in <a href="http://venkateshcm.com/2014/04/Reactor-Pattern-Part-1-Non-blocking-I-O/">Reactor Pattern Part 1 : Applications with Blocking I/O</a>.</p>
 
 <p><b><i>Little&rsquo;s law</i></b></p>
 
@@ -81,20 +81,20 @@ ResponseTime = Time taken to process one web request <br/></p>
 
 <p><b>Thread pool size = Number of CPUs</b></p>
 
-<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.github.io/img/blog/MinimumThreads.png" class="" style="display: inline-block;"></p>
+<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.com/img/blog/MinimumThreads.png" class="" style="display: inline-block;"></p>
 
 <p>Above diagram depicts blocking IO bound applications when number of threads is equal to number cpus.
 Application threads get blocked waiting for down stream systems to respond. Response time increases as requests get queued since threads are blocked. Application starts rejecting requests as all threads are blocked even though CPU usage is very low.</p>
 
 <p><b>Large Thread pool size</b></p>
 
-<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.github.io/img/blog/MaximumThreads.png" class="" style="display: inline-block;"></p>
+<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.com/img/blog/MaximumThreads.png" class="" style="display: inline-block;"></p>
 
 <p>Above diagram depicts blocking IO bound applications when large number of threads are created in web application. Due to large number of threads, thread context switching will be very frequent. Application CPU usage gets maxed out even though throughput has not increased due to unnecessary thread context switching. Response Time degrades since requests are interrupted with context switching.</p>
 
 <p><b>Optimal Thread pool size</b></p>
 
-<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.github.io/img/blog/OptimalThreads.png" class="" style="display: inline-block;"></p>
+<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.com/img/blog/OptimalThreads.png" class="" style="display: inline-block;"></p>
 
 <p>Above diagram depicts blocking IO bound applications when optimal number of threads are created in web application. CPU gets efficiently used with good throughput and fewer thread context switching. We notice good response time due to efficient request processing with fewer interrupts (context switching).</p>
 
@@ -116,9 +116,9 @@ Application threads get blocked waiting for down stream systems to respond. Resp
   
   <entry>
     <title type="html"><![CDATA[Architecture Issues Scaling Web Applications]]></title>
-    <link href="http://venkateshcm.github.io/2014/05/Architecture-Issues-Scaling-Web-Applications/"/>
+    <link href="http://venkateshcm.com/2014/05/Architecture-Issues-Scaling-Web-Applications/"/>
     <updated>2014-05-05T00:00:00+05:30</updated>
-    <id>http://venkateshcm.github.io/2014/05/Architecture-Issues-Scaling-Web-Applications</id>
+    <id>http://venkateshcm.com/2014/05/Architecture-Issues-Scaling-Web-Applications</id>
     <content type="html"><![CDATA[<p>I will cover architecture issues that show up while scaling and performance tuning large scale web application in this blog.</p>
 
 <p>Lets start by defining few terms to create common understanding and vocabulary. Later on I will go through different issues that pop-up while scaling web application like</p>
@@ -131,7 +131,7 @@ Application threads get blocked waiting for down stream systems to respond. Resp
 </ul>
 
 
-<p><a href="http://venkateshcm.github.io/2014/05/How-To-Determine-Web-Applications-Thread-Poll-Size/">Determining optimal thread pool size of an web application</a> will be covered in next blog.</p>
+<p><a href="http://venkateshcm.com/2014/05/How-To-Determine-Web-Applications-Thread-Poll-Size/">Determining optimal thread pool size of an web application</a> will be covered in next blog.</p>
 
 <p><b><i>Performance</i></b></p>
 
@@ -171,7 +171,7 @@ increasing the number of boxes.</li>
 
 <p>Application architecture is scalable if each layer in multi layered architecture is scalable (scale out). For example :&ndash; As shown in diagram below we should be able linearly scale by add additional box in Application Layer or Database Layer.</p>
 
-<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.github.io/img/blog/scaling.png" class="" style="display: inline-block;"></p>
+<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.com/img/blog/scaling.png" class="" style="display: inline-block;"></p>
 
 <p><b><i>Scaling Load Balancer</i></b></p>
 
@@ -251,16 +251,16 @@ Performance tuning or scaling IO bound applications is a difficult job due to it
 </ul>
 
 
-<p>Next blog will cover <a href="http://venkateshcm.github.io/2014/05/How-To-Determine-Web-Applications-Thread-Poll-Size/">how to determining optimal thread pool size of an web application</a>.</p>
+<p>Next blog will cover <a href="http://venkateshcm.com/2014/05/How-To-Determine-Web-Applications-Thread-Poll-Size/">how to determining optimal thread pool size of an web application</a>.</p>
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[Zen Of Software Design - Part 2]]></title>
-    <link href="http://venkateshcm.github.io/2014/04/Zen-Of-Software-Design-Part-2/"/>
+    <link href="http://venkateshcm.com/2014/04/Zen-Of-Software-Design-Part-2/"/>
     <updated>2014-04-28T00:00:00+05:30</updated>
-    <id>http://venkateshcm.github.io/2014/04/Zen-Of-Software-Design-Part-2</id>
-    <content type="html"><![CDATA[<p>This blog is part 2 of <a href="http://venkateshcm.github.io/2014/04/Zen-Of-Software-Design-Part-1/">Zen of Software Design : Part 1</a> which covers lines 1 to 9 of <a href="http://legacy.python.org/dev/peps/pep-0020/">Zen of Python</a>, if you have not read it please read it before reading this post. In this blog I will cover lines 10 to 19 of <a href="http://legacy.python.org/dev/peps/pep-0020/">Zen of Python</a></p>
+    <id>http://venkateshcm.com/2014/04/Zen-Of-Software-Design-Part-2</id>
+    <content type="html"><![CDATA[<p>This blog is part 2 of <a href="http://venkateshcm.com/2014/04/Zen-Of-Software-Design-Part-1/">Zen of Software Design : Part 1</a> which covers lines 1 to 9 of <a href="http://legacy.python.org/dev/peps/pep-0020/">Zen of Python</a>, if you have not read it please read it before reading this post. In this blog I will cover lines 10 to 19 of <a href="http://legacy.python.org/dev/peps/pep-0020/">Zen of Python</a></p>
 
 <p><b><i>Errors should never pass silently.</i></b><br/>
 <b><i>Unless explicitly silenced.</i></b></p>
@@ -334,10 +334,10 @@ The Zen of Python, by Tim Peters
   
   <entry>
     <title type="html"><![CDATA[Reactor Pattern Part 4 - Write Sequential Non-Blocking IO Code With Fibers in NodeJS]]></title>
-    <link href="http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-4-Write-Sequential-Non-Blocking-IO-Code-With-Fibers-In-NodeJS/"/>
+    <link href="http://venkateshcm.com/2014/04/Reactor-Pattern-Part-4-Write-Sequential-Non-Blocking-IO-Code-With-Fibers-In-NodeJS/"/>
     <updated>2014-04-26T00:00:00+05:30</updated>
-    <id>http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-4-Write-Sequential-Non-Blocking-IO-Code-With-Fibers-In-NodeJS</id>
-    <content type="html"><![CDATA[<p>This is the final part of 4 part Reactor Pattern series. In <a href="http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-1-Non-blocking-I-O/">Reactor Pattern Part 1 : Applications with Blocking I/O</a>, I went through issues faced by a single threaded application to scale to handle more requests pre box. In <a href="http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-2-Non-blocking-I-O/">Reactor Pattern Part 2 : Applications with Non-Blocking I/O</a> I went through what Reactor Pattern is and how it solved the Blocking IO issues and mentioned call back issue due to async code. <a href="http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-3-Promises-to-solve-callback-hell/">Reactor Pattern Part 3 &ndash; Promises to solve callback hell</a> talked about callback code issues in detail and how promise library can solve some of the issues.</p>
+    <id>http://venkateshcm.com/2014/04/Reactor-Pattern-Part-4-Write-Sequential-Non-Blocking-IO-Code-With-Fibers-In-NodeJS</id>
+    <content type="html"><![CDATA[<p>This is the final part of 4 part Reactor Pattern series. In <a href="http://venkateshcm.com/2014/04/Reactor-Pattern-Part-1-Non-blocking-I-O/">Reactor Pattern Part 1 : Applications with Blocking I/O</a>, I went through issues faced by a single threaded application to scale to handle more requests pre box. In <a href="http://venkateshcm.com/2014/04/Reactor-Pattern-Part-2-Non-blocking-I-O/">Reactor Pattern Part 2 : Applications with Non-Blocking I/O</a> I went through what Reactor Pattern is and how it solved the Blocking IO issues and mentioned call back issue due to async code. <a href="http://venkateshcm.com/2014/04/Reactor-Pattern-Part-3-Promises-to-solve-callback-hell/">Reactor Pattern Part 3 &ndash; Promises to solve callback hell</a> talked about callback code issues in detail and how promise library can solve some of the issues.</p>
 
 <p><b><i>Recap &ndash; Part 3 Conclusion</i></b></p>
 
@@ -828,10 +828,10 @@ The Zen of Python, by Tim Peters
   
   <entry>
     <title type="html"><![CDATA[Reactor Pattern Part 3 - Promises to solve callback hell]]></title>
-    <link href="http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-3-Promises-to-solve-callback-hell/"/>
+    <link href="http://venkateshcm.com/2014/04/Reactor-Pattern-Part-3-Promises-to-solve-callback-hell/"/>
     <updated>2014-04-23T00:00:00+05:30</updated>
-    <id>http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-3-Promises-to-solve-callback-hell</id>
-    <content type="html"><![CDATA[<p>In <a href="http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-1-Non-blocking-I-O/">Reactor Pattern Part 1 : Applications with Blocking I/O</a>, I went through issues faced by a single threaded application to scale to handle more requests pre box and the corresponding issues it introduces. In <a href="http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-2-Non-blocking-I-O/">Reactor Pattern Part 2 : Applications with Non-Blocking I/O</a> I went through what Reactor Pattern is and how it fixes the Blocking IO issues and mentioned call back issue that async code introduces.</p>
+    <id>http://venkateshcm.com/2014/04/Reactor-Pattern-Part-3-Promises-to-solve-callback-hell</id>
+    <content type="html"><![CDATA[<p>In <a href="http://venkateshcm.com/2014/04/Reactor-Pattern-Part-1-Non-blocking-I-O/">Reactor Pattern Part 1 : Applications with Blocking I/O</a>, I went through issues faced by a single threaded application to scale to handle more requests pre box and the corresponding issues it introduces. In <a href="http://venkateshcm.com/2014/04/Reactor-Pattern-Part-2-Non-blocking-I-O/">Reactor Pattern Part 2 : Applications with Non-Blocking I/O</a> I went through what Reactor Pattern is and how it fixes the Blocking IO issues and mentioned call back issue that async code introduces.</p>
 
 <p>Lets get little more detail on what the callback issues are and introduce few options or libraries used to partially solve the issue, in this blog.</p>
 
@@ -1070,18 +1070,18 @@ The Zen of Python, by Tim Peters
 
 <p>Async or Non-blocking IO introduces new challenges on how applications should to be structured and how async call backs can be abstracted away using promises like library. We need Non-blocking IO application since, sequencial blocking IO applications are not scalable. So Non-Blocking IO or Asynchronous code is not a desired feature but a nessesary evil to achive scalability.</p>
 
-<p>Finally, assumption that Non-blocking IO and Asynchronous code are clubed together and one comes with other. Is it possible to get the best of both the worlds, i.e. Sequential code and Non-Blocking IO scalability. In fact, I think there is an option based on Fibers which can provide best of both the worlds. I will cover <a href="http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-4-Write-Sequential-Non-Blocking-IO-Code-With-Fibers-In-NodeJS/">Fibers and how they achive both Non-Blocking IO and Sequential codebase</a> in the next blog.</p>
+<p>Finally, assumption that Non-blocking IO and Asynchronous code are clubed together and one comes with other. Is it possible to get the best of both the worlds, i.e. Sequential code and Non-Blocking IO scalability. In fact, I think there is an option based on Fibers which can provide best of both the worlds. I will cover Fibers and how they achive both Non-Blocking IO and Sequential codebase in the <a href="http://venkateshcm.com/2014/04/Reactor-Pattern-Part-4-Write-Sequential-Non-Blocking-IO-Code-With-Fibers-In-NodeJS/">Reactor Pattern Part 4 Write Sequential Non Blocking IO Code With Fibers In NodeJS</a>.</p>
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[Zen of Software Design - Part 1]]></title>
-    <link href="http://venkateshcm.github.io/2014/04/Zen-Of-Software-Design-Part-1/"/>
+    <link href="http://venkateshcm.com/2014/04/Zen-Of-Software-Design-Part-1/"/>
     <updated>2014-04-11T00:00:00+05:30</updated>
-    <id>http://venkateshcm.github.io/2014/04/Zen-Of-Software-Design-Part-1</id>
+    <id>http://venkateshcm.com/2014/04/Zen-Of-Software-Design-Part-1</id>
     <content type="html"><![CDATA[<p>I call it Zen of Software Design.. instead of <a href="http://legacy.python.org/dev/peps/pep-0020/">Zen of Python</a> since it applies to all of software design and not only to python. The poem itself is presented at the bottom of this blog for reference and below is my interpretations and thoughts on it.</p>
 
-<p>Lines 1 to 9 of <a href="http://legacy.python.org/dev/peps/pep-0020/">Zen of Python</a> is covered in this blog, Lines 10 to 19 will be covered in <a href="http://venkateshcm.github.io/2014/04/Zen-Of-Software-Design-Part-2/">Zen of Software Design : Part 2</a>.</p>
+<p>Lines 1 to 9 of <a href="http://legacy.python.org/dev/peps/pep-0020/">Zen of Python</a> is covered in this blog, Lines 10 to 19 will be covered in <a href="http://venkateshcm.com/2014/04/Zen-Of-Software-Design-Part-2/">Zen of Software Design : Part 2</a>.</p>
 
 <br/>
 
@@ -1216,7 +1216,7 @@ The Zen of Python, by Tim Peters
 
 <p>On the other hand if they truly are special cases and trying to extend or modelling it has one of the existing flows make design complicated, we should not hesitate to incorporate the new requirement as special case as a pragmatic/practical architect or developer should do.</p>
 
-<p>Lines 10 to 19 will be covered in <a href="http://venkateshcm.github.io/2014/04/Zen-Of-Software-Design-Part-2/">Zen of Software Design : Part 2</a> of this blog</p>
+<p>Lines 10 to 19 will be covered in <a href="http://venkateshcm.com/2014/04/Zen-Of-Software-Design-Part-2/">Zen of Software Design : Part 2</a> of this blog</p>
 
 <pre><code>$ python
 
@@ -1248,16 +1248,16 @@ The Zen of Python, by Tim Peters
   
   <entry>
     <title type="html"><![CDATA[Reactor Pattern Part 2 - Applications with Non-Blocking I/O]]></title>
-    <link href="http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-2-Non-blocking-I-O/"/>
+    <link href="http://venkateshcm.com/2014/04/Reactor-Pattern-Part-2-Non-blocking-I-O/"/>
     <updated>2014-04-10T00:00:00+05:30</updated>
-    <id>http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-2-Non-blocking-I-O</id>
-    <content type="html"><![CDATA[<p>In <a href="http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-1-Non-blocking-I-O/">Reactor Pattern Part 1 : Applications with Blocking I/O</a>, I went through issues faced by a single threaded application to scale to handle more requests pre box.</p>
+    <id>http://venkateshcm.com/2014/04/Reactor-Pattern-Part-2-Non-blocking-I-O</id>
+    <content type="html"><![CDATA[<p>In <a href="http://venkateshcm.com/2014/04/Reactor-Pattern-Part-1-Non-blocking-I-O/">Reactor Pattern Part 1 : Applications with Blocking I/O</a>, I went through issues faced by a single threaded application to scale to handle more requests pre box.</p>
 
 <p>In this blog, we will look at an alternative solution to maximise CPU usage.</p>
 
 <p>The diagram below from the part 1 blog we can notice that applications require CPU in busts and they have wait periods between the processing busts.</p>
 
-<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.github.io/img/blog/ThreeThreads.png" class="" style="display: inline-block;"></p>
+<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.com/img/blog/ThreeThreads.png" class="" style="display: inline-block;"></p>
 
 <p>If we treat processing busts as events and queue events to be executed on a single thread, we can make sure the thread (CPU) is always occupied and thus giving us maximising CPU usage and avoiding unnecessary context switching.</p>
 
@@ -1287,7 +1287,7 @@ The Zen of Python, by Tim Peters
 </ul>
 
 
-<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.github.io/img/blog/EventLoop.png" class="" style="display: inline-block;"></p>
+<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.com/img/blog/EventLoop.png" class="" style="display: inline-block;"></p>
 
 <p>The solution described above is a simplified version of Reactor Pattern.</p>
 
@@ -1323,15 +1323,15 @@ The Zen of Python, by Tim Peters
 
 <p>Some of the disadvantages can be mitigated by using fiber (ruby fibers, node fibers), will cover Fibers in another blog.</p>
 
-<p>In part 3, we will look at <a href="http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-3-Promises-to-solve-callback-hell/">Callback issue in more detail and how promises can help</a> fix callback issues.</p>
+<p>In part 3, we will look at <a href="http://venkateshcm.com/2014/04/Reactor-Pattern-Part-3-Promises-to-solve-callback-hell/">Callback issue in more detail and how promises can help</a> fix callback issues.</p>
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[Reactor Pattern Part 1 - Applications with Blocking I/O]]></title>
-    <link href="http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-1-Non-blocking-I-O/"/>
+    <link href="http://venkateshcm.com/2014/04/Reactor-Pattern-Part-1-Non-blocking-I-O/"/>
     <updated>2014-04-09T00:00:00+05:30</updated>
-    <id>http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-1-Non-blocking-I-O</id>
+    <id>http://venkateshcm.com/2014/04/Reactor-Pattern-Part-1-Non-blocking-I-O</id>
     <content type="html"><![CDATA[<br/>
 
 
@@ -1341,15 +1341,15 @@ The Zen of Python, by Tim Peters
 
 <p>In a single threaded application like Ruby on Rails Applications, requests are processed by a single thread. When the thread makes a I/O bound call like database query or network call, application/thread is blocked even though it could be used to work on other requests.</p>
 
-<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.github.io/img/blog/SingleThread.png" class="" style="display: inline-block;"></p>
+<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.com/img/blog/SingleThread.png" class="" style="display: inline-block;"></p>
 
 <p>A solution to get around the above problem is to have multiple applications running on the same box. So when one application&rsquo;s thread is blocked another application&rsquo;s thread can proceed with another request processing. In below diagram there are two applications competing for CPU time and second application consumes CPU between a2 and a1 time. But we still see that CPU is idle between a1 and t1 and between t2 and a2.</p>
 
-<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.github.io/img/blog/TwoThreads.png" class="" style="display: inline-block;"></p>
+<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.com/img/blog/TwoThreads.png" class="" style="display: inline-block;"></p>
 
 <p>To avoid any idle time on CPU we can add more applications, but this will lead to unnecessary context switch which will degrade performance further. For example in the diagram below, third application is switched with second application while third application is still processing a request and needs CPU time.</p>
 
-<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.github.io/img/blog/ThreeThreads.png" class="" style="display: inline-block;"></p>
+<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.com/img/blog/ThreeThreads.png" class="" style="display: inline-block;"></p>
 
 <p>As shown in the above diagram, we can notice two issues</p>
 
@@ -1374,15 +1374,15 @@ The Zen of Python, by Tim Peters
 </ul>
 
 
-<p>In part 2, we will look at <a href="http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-2-Non-blocking-I-O/">Non-Blocking IO</a> as an alternative solution to maximise CPU usage.</p>
+<p>In part 2, we will look at <a href="http://venkateshcm.com/2014/04/Reactor-Pattern-Part-2-Non-blocking-I-O/">Non-Blocking IO</a> as an alternative solution to maximise CPU usage.</p>
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[Silver Bullet Solution]]></title>
-    <link href="http://venkateshcm.github.io/2014/04/silver-bullet-solution/"/>
+    <link href="http://venkateshcm.com/2014/04/silver-bullet-solution/"/>
     <updated>2014-04-08T00:00:00+05:30</updated>
-    <id>http://venkateshcm.github.io/2014/04/silver-bullet-solution</id>
+    <id>http://venkateshcm.com/2014/04/silver-bullet-solution</id>
     <content type="html"><![CDATA[<p>While working on a solution for a problem, we try to find a solution which works in all conditions or situations. There are egos built-up on which solution is better or solves all the problems.
 But rarely have I seen a solution which fixes the problem completely with-out any side effects.</p>
 
@@ -1418,9 +1418,9 @@ But rarely have I seen a solution which fixes the problem completely with-out an
   
   <entry>
     <title type="html"><![CDATA[Guidelines on Restful Web Services]]></title>
-    <link href="http://venkateshcm.github.io/2014/04/Guidelines-Restful-Web-Services/"/>
+    <link href="http://venkateshcm.com/2014/04/Guidelines-Restful-Web-Services/"/>
     <updated>2014-04-08T00:00:00+05:30</updated>
-    <id>http://venkateshcm.github.io/2014/04/Guidelines-Restful-Web-Services</id>
+    <id>http://venkateshcm.com/2014/04/Guidelines-Restful-Web-Services</id>
     <content type="html"><![CDATA[<p><p><b><i>Guidelines to get Restful Web Services right</i></b><p></p>
 
 <p><b><i>Uniform Resource handling</i></b></p>
@@ -1624,9 +1624,9 @@ HTTP, including the general purpose of “this action isn’t worth standardizin
   
   <entry>
     <title type="html"><![CDATA[How, What and Why of Software Development]]></title>
-    <link href="http://venkateshcm.github.io/2014/04/How-What-And-Why-of-Software-Development/"/>
+    <link href="http://venkateshcm.com/2014/04/How-What-And-Why-of-Software-Development/"/>
     <updated>2014-04-07T00:00:00+05:30</updated>
-    <id>http://venkateshcm.github.io/2014/04/How-What-And-Why-of-Software-Development</id>
+    <id>http://venkateshcm.com/2014/04/How-What-And-Why-of-Software-Development</id>
     <content type="html"><![CDATA[<p>There are three levels at which a developer can operate during software development.</p>
 
 <p><b><i>How</i></b></p>

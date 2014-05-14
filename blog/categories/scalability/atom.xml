@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: Scalability | Venkatesh CM]]></title>
-  <link href="http://venkateshcm.github.io/blog/categories/scalability/atom.xml" rel="self"/>
-  <link href="http://venkateshcm.github.io/"/>
-  <updated>2014-05-13T07:47:06+05:30</updated>
-  <id>http://venkateshcm.github.io/</id>
+  <link href="http://venkateshcm.com/blog/categories/scalability/atom.xml" rel="self"/>
+  <link href="http://venkateshcm.com/"/>
+  <updated>2014-05-14T15:13:57+05:30</updated>
+  <id>http://venkateshcm.com/</id>
   <author>
     <name><![CDATA[Venkatesh CM]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[How To Determine Web Application Thread Pool Size]]></title>
-    <link href="http://venkateshcm.github.io/2014/05/How-To-Determine-Web-Applications-Thread-Poll-Size/"/>
+    <link href="http://venkateshcm.com/2014/05/How-To-Determine-Web-Applications-Thread-Poll-Size/"/>
     <updated>2014-05-10T00:00:00+05:30</updated>
-    <id>http://venkateshcm.github.io/2014/05/How-To-Determine-Web-Applications-Thread-Poll-Size</id>
+    <id>http://venkateshcm.com/2014/05/How-To-Determine-Web-Applications-Thread-Poll-Size</id>
     <content type="html"><![CDATA[<p>Continuing on <a href="/2014/05/Architecture-Issues-Scaling-Web-Applications/">Architectural Issues faced while scaling web applications</a>, in this blog I will cover a common issue, how to determine web application thread pool size?, that shows up while deploying web applications to production or while performance testing web applications.</p>
 
 <p><b><i>Thread Pool</i></b></p>
@@ -81,20 +81,20 @@ ResponseTime = Time taken to process one web request <br/></p>
 
 <p><b>Thread pool size = Number of CPUs</b></p>
 
-<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.github.io/img/blog/MinimumThreads.png" class="" style="display: inline-block;"></p>
+<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.com/img/blog/MinimumThreads.png" class="" style="display: inline-block;"></p>
 
 <p>Above diagram depicts blocking IO bound applications when number of threads is equal to number cpus.
 Application threads get blocked waiting for down stream systems to respond. Response time increases as requests get queued since threads are blocked. Application starts rejecting requests as all threads are blocked even though CPU usage is very low.</p>
 
 <p><b>Large Thread pool size</b></p>
 
-<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.github.io/img/blog/MaximumThreads.png" class="" style="display: inline-block;"></p>
+<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.com/img/blog/MaximumThreads.png" class="" style="display: inline-block;"></p>
 
 <p>Above diagram depicts blocking IO bound applications when large number of threads are created in web application. Due to large number of threads, thread context switching will be very frequent. Application CPU usage gets maxed out even though throughput has not increased due to unnecessary thread context switching. Response Time degrades since requests are interrupted with context switching.</p>
 
 <p><b>Optimal Thread pool size</b></p>
 
-<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.github.io/img/blog/OptimalThreads.png" class="" style="display: inline-block;"></p>
+<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.com/img/blog/OptimalThreads.png" class="" style="display: inline-block;"></p>
 
 <p>Above diagram depicts blocking IO bound applications when optimal number of threads are created in web application. CPU gets efficiently used with good throughput and fewer thread context switching. We notice good response time due to efficient request processing with fewer interrupts (context switching).</p>
 
@@ -116,9 +116,9 @@ Application threads get blocked waiting for down stream systems to respond. Resp
   
   <entry>
     <title type="html"><![CDATA[Architecture Issues Scaling Web Applications]]></title>
-    <link href="http://venkateshcm.github.io/2014/05/Architecture-Issues-Scaling-Web-Applications/"/>
+    <link href="http://venkateshcm.com/2014/05/Architecture-Issues-Scaling-Web-Applications/"/>
     <updated>2014-05-05T00:00:00+05:30</updated>
-    <id>http://venkateshcm.github.io/2014/05/Architecture-Issues-Scaling-Web-Applications</id>
+    <id>http://venkateshcm.com/2014/05/Architecture-Issues-Scaling-Web-Applications</id>
     <content type="html"><![CDATA[<p>I will cover architecture issues that show up while scaling and performance tuning large scale web application in this blog.</p>
 
 <p>Lets start by defining few terms to create common understanding and vocabulary. Later on I will go through different issues that pop-up while scaling web application like</p>
@@ -171,7 +171,7 @@ increasing the number of boxes.</li>
 
 <p>Application architecture is scalable if each layer in multi layered architecture is scalable (scale out). For example :&ndash; As shown in diagram below we should be able linearly scale by add additional box in Application Layer or Database Layer.</p>
 
-<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.github.io/img/blog/scaling.png" class="" style="display: inline-block;"></p>
+<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.com/img/blog/scaling.png" class="" style="display: inline-block;"></p>
 
 <p><b><i>Scaling Load Balancer</i></b></p>
 
@@ -257,9 +257,9 @@ Performance tuning or scaling IO bound applications is a difficult job due to it
   
   <entry>
     <title type="html"><![CDATA[Reactor Pattern Part 4 - Write Sequential Non-Blocking IO Code With Fibers in NodeJS]]></title>
-    <link href="http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-4-Write-Sequential-Non-Blocking-IO-Code-With-Fibers-In-NodeJS/"/>
+    <link href="http://venkateshcm.com/2014/04/Reactor-Pattern-Part-4-Write-Sequential-Non-Blocking-IO-Code-With-Fibers-In-NodeJS/"/>
     <updated>2014-04-26T00:00:00+05:30</updated>
-    <id>http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-4-Write-Sequential-Non-Blocking-IO-Code-With-Fibers-In-NodeJS</id>
+    <id>http://venkateshcm.com/2014/04/Reactor-Pattern-Part-4-Write-Sequential-Non-Blocking-IO-Code-With-Fibers-In-NodeJS</id>
     <content type="html"><![CDATA[<p>This is the final part of 4 part Reactor Pattern series. In <a href="/2014/04/Reactor-Pattern-Part-1-Non-blocking-I-O/">Reactor Pattern Part 1 : Applications with Blocking I/O</a>, I went through issues faced by a single threaded application to scale to handle more requests pre box. In <a href="/2014/04/Reactor-Pattern-Part-2-Non-blocking-I-O/">Reactor Pattern Part 2 : Applications with Non-Blocking I/O</a> I went through what Reactor Pattern is and how it solved the Blocking IO issues and mentioned call back issue due to async code. <a href="/2014/04/Reactor-Pattern-Part-3-Promises-to-solve-callback-hell/">Reactor Pattern Part 3 &ndash; Promises to solve callback hell</a> talked about callback code issues in detail and how promise library can solve some of the issues.</p>
 
 <p><b><i>Recap &ndash; Part 3 Conclusion</i></b></p>
@@ -797,9 +797,9 @@ Performance tuning or scaling IO bound applications is a difficult job due to it
   
   <entry>
     <title type="html"><![CDATA[Reactor Pattern Part 3 - Promises to solve callback hell]]></title>
-    <link href="http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-3-Promises-to-solve-callback-hell/"/>
+    <link href="http://venkateshcm.com/2014/04/Reactor-Pattern-Part-3-Promises-to-solve-callback-hell/"/>
     <updated>2014-04-23T00:00:00+05:30</updated>
-    <id>http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-3-Promises-to-solve-callback-hell</id>
+    <id>http://venkateshcm.com/2014/04/Reactor-Pattern-Part-3-Promises-to-solve-callback-hell</id>
     <content type="html"><![CDATA[<p>In <a href="/2014/04/Reactor-Pattern-Part-1-Non-blocking-I-O/">Reactor Pattern Part 1 : Applications with Blocking I/O</a>, I went through issues faced by a single threaded application to scale to handle more requests pre box and the corresponding issues it introduces. In <a href="/2014/04/Reactor-Pattern-Part-2-Non-blocking-I-O/">Reactor Pattern Part 2 : Applications with Non-Blocking I/O</a> I went through what Reactor Pattern is and how it fixes the Blocking IO issues and mentioned call back issue that async code introduces.</p>
 
 <p>Lets get little more detail on what the callback issues are and introduce few options or libraries used to partially solve the issue, in this blog.</p>
@@ -1064,22 +1064,22 @@ Performance tuning or scaling IO bound applications is a difficult job due to it
 
 <p>Async or Non-blocking IO introduces new challenges on how applications should to be structured and how async call backs can be abstracted away using promises like library. We need Non-blocking IO application since, sequencial blocking IO applications are not scalable. So Non-Blocking IO or Asynchronous code is not a desired feature but a nessesary evil to achive scalability.</p>
 
-<p>Finally, assumption that Non-blocking IO and Asynchronous code are clubed together and one comes with other. Is it possible to get the best of both the worlds, i.e. Sequential code and Non-Blocking IO scalability. In fact, I think there is an option based on Fibers which can provide best of both the worlds. I will cover <a href="/2014/04/Reactor-Pattern-Part-4-Write-Sequential-Non-Blocking-IO-Code-With-Fibers-In-NodeJS/">Fibers and how they achive both Non-Blocking IO and Sequential codebase</a> in the next blog.</p>
+<p>Finally, assumption that Non-blocking IO and Asynchronous code are clubed together and one comes with other. Is it possible to get the best of both the worlds, i.e. Sequential code and Non-Blocking IO scalability. In fact, I think there is an option based on Fibers which can provide best of both the worlds. I will cover Fibers and how they achive both Non-Blocking IO and Sequential codebase in the <a href="/2014/04/Reactor-Pattern-Part-4-Write-Sequential-Non-Blocking-IO-Code-With-Fibers-In-NodeJS/">Reactor Pattern Part 4 Write Sequential Non Blocking IO Code With Fibers In NodeJS</a>.</p>
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[Reactor Pattern Part 2 - Applications with Non-Blocking I/O]]></title>
-    <link href="http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-2-Non-blocking-I-O/"/>
+    <link href="http://venkateshcm.com/2014/04/Reactor-Pattern-Part-2-Non-blocking-I-O/"/>
     <updated>2014-04-10T00:00:00+05:30</updated>
-    <id>http://venkateshcm.github.io/2014/04/Reactor-Pattern-Part-2-Non-blocking-I-O</id>
+    <id>http://venkateshcm.com/2014/04/Reactor-Pattern-Part-2-Non-blocking-I-O</id>
     <content type="html"><![CDATA[<p>In <a href="/2014/04/Reactor-Pattern-Part-1-Non-blocking-I-O/">Reactor Pattern Part 1 : Applications with Blocking I/O</a>, I went through issues faced by a single threaded application to scale to handle more requests pre box.</p>
 
 <p>In this blog, we will look at an alternative solution to maximise CPU usage.</p>
 
 <p>The diagram below from the part 1 blog we can notice that applications require CPU in busts and they have wait periods between the processing busts.</p>
 
-<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.github.io/img/blog/ThreeThreads.png" class="" style="display: inline-block;"></p>
+<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.com/img/blog/ThreeThreads.png" class="" style="display: inline-block;"></p>
 
 <p>If we treat processing busts as events and queue events to be executed on a single thread, we can make sure the thread (CPU) is always occupied and thus giving us maximising CPU usage and avoiding unnecessary context switching.</p>
 
@@ -1109,7 +1109,7 @@ Performance tuning or scaling IO bound applications is a difficult job due to it
 </ul>
 
 
-<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.github.io/img/blog/EventLoop.png" class="" style="display: inline-block;"></p>
+<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.com/img/blog/EventLoop.png" class="" style="display: inline-block;"></p>
 
 <p>The solution described above is a simplified version of Reactor Pattern.</p>
 

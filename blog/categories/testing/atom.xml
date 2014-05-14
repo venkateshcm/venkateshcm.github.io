@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: Testing | Venkatesh CM]]></title>
-  <link href="http://venkateshcm.github.io/blog/categories/testing/atom.xml" rel="self"/>
-  <link href="http://venkateshcm.github.io/"/>
-  <updated>2014-05-13T07:47:06+05:30</updated>
-  <id>http://venkateshcm.github.io/</id>
+  <link href="http://venkateshcm.com/blog/categories/testing/atom.xml" rel="self"/>
+  <link href="http://venkateshcm.com/"/>
+  <updated>2014-05-14T15:13:57+05:30</updated>
+  <id>http://venkateshcm.com/</id>
   <author>
     <name><![CDATA[Venkatesh CM]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[How To Determine Web Application Thread Pool Size]]></title>
-    <link href="http://venkateshcm.github.io/2014/05/How-To-Determine-Web-Applications-Thread-Poll-Size/"/>
+    <link href="http://venkateshcm.com/2014/05/How-To-Determine-Web-Applications-Thread-Poll-Size/"/>
     <updated>2014-05-10T00:00:00+05:30</updated>
-    <id>http://venkateshcm.github.io/2014/05/How-To-Determine-Web-Applications-Thread-Poll-Size</id>
+    <id>http://venkateshcm.com/2014/05/How-To-Determine-Web-Applications-Thread-Poll-Size</id>
     <content type="html"><![CDATA[<p>Continuing on <a href="/2014/05/Architecture-Issues-Scaling-Web-Applications/">Architectural Issues faced while scaling web applications</a>, in this blog I will cover a common issue, how to determine web application thread pool size?, that shows up while deploying web applications to production or while performance testing web applications.</p>
 
 <p><b><i>Thread Pool</i></b></p>
@@ -81,20 +81,20 @@ ResponseTime = Time taken to process one web request <br/></p>
 
 <p><b>Thread pool size = Number of CPUs</b></p>
 
-<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.github.io/img/blog/MinimumThreads.png" class="" style="display: inline-block;"></p>
+<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.com/img/blog/MinimumThreads.png" class="" style="display: inline-block;"></p>
 
 <p>Above diagram depicts blocking IO bound applications when number of threads is equal to number cpus.
 Application threads get blocked waiting for down stream systems to respond. Response time increases as requests get queued since threads are blocked. Application starts rejecting requests as all threads are blocked even though CPU usage is very low.</p>
 
 <p><b>Large Thread pool size</b></p>
 
-<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.github.io/img/blog/MaximumThreads.png" class="" style="display: inline-block;"></p>
+<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.com/img/blog/MaximumThreads.png" class="" style="display: inline-block;"></p>
 
 <p>Above diagram depicts blocking IO bound applications when large number of threads are created in web application. Due to large number of threads, thread context switching will be very frequent. Application CPU usage gets maxed out even though throughput has not increased due to unnecessary thread context switching. Response Time degrades since requests are interrupted with context switching.</p>
 
 <p><b>Optimal Thread pool size</b></p>
 
-<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.github.io/img/blog/OptimalThreads.png" class="" style="display: inline-block;"></p>
+<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.com/img/blog/OptimalThreads.png" class="" style="display: inline-block;"></p>
 
 <p>Above diagram depicts blocking IO bound applications when optimal number of threads are created in web application. CPU gets efficiently used with good throughput and fewer thread context switching. We notice good response time due to efficient request processing with fewer interrupts (context switching).</p>
 
@@ -116,9 +116,9 @@ Application threads get blocked waiting for down stream systems to respond. Resp
   
   <entry>
     <title type="html"><![CDATA[Architecture Issues Scaling Web Applications]]></title>
-    <link href="http://venkateshcm.github.io/2014/05/Architecture-Issues-Scaling-Web-Applications/"/>
+    <link href="http://venkateshcm.com/2014/05/Architecture-Issues-Scaling-Web-Applications/"/>
     <updated>2014-05-05T00:00:00+05:30</updated>
-    <id>http://venkateshcm.github.io/2014/05/Architecture-Issues-Scaling-Web-Applications</id>
+    <id>http://venkateshcm.com/2014/05/Architecture-Issues-Scaling-Web-Applications</id>
     <content type="html"><![CDATA[<p>I will cover architecture issues that show up while scaling and performance tuning large scale web application in this blog.</p>
 
 <p>Lets start by defining few terms to create common understanding and vocabulary. Later on I will go through different issues that pop-up while scaling web application like</p>
@@ -171,7 +171,7 @@ increasing the number of boxes.</li>
 
 <p>Application architecture is scalable if each layer in multi layered architecture is scalable (scale out). For example :&ndash; As shown in diagram below we should be able linearly scale by add additional box in Application Layer or Database Layer.</p>
 
-<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.github.io/img/blog/scaling.png" class="" style="display: inline-block;"></p>
+<p><img class="article-img" border="0" height="325" width="480" src="http://venkateshcm.com/img/blog/scaling.png" class="" style="display: inline-block;"></p>
 
 <p><b><i>Scaling Load Balancer</i></b></p>
 
