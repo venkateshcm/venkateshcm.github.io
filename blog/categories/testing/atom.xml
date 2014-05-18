@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Testing | Venkatesh CM]]></title>
   <link href="http://venkateshcm.com/blog/categories/testing/atom.xml" rel="self"/>
   <link href="http://venkateshcm.com/"/>
-  <updated>2014-05-18T22:36:53+05:30</updated>
+  <updated>2014-05-18T23:28:38+05:30</updated>
   <id>http://venkateshcm.com/</id>
   <author>
     <name><![CDATA[Venkatesh CM]]></name>
@@ -233,10 +233,12 @@ A slow component in request pipeline puts lower limit on the response time of th
 <p>These issues can be fixed by</p>
 
 <ul>
-<li>Caching precomputing values</li>
+<li>Caching precomputed values</li>
 <li>Performing the computation in separate background job.</li>
 </ul>
 
+
+<p>Different ways of caching and how caching can reduce load on web application and improve performance and scalability of web applications is covered <a href="/2014/05/Caching-To-Scale-Web-Applications/">Caching To Scale Web Applications</a></p>
 
 <p><b><i>IO Bound Application</i></b></p>
 
