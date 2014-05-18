@@ -4,7 +4,7 @@
   <title><![CDATA[Venkatesh CM]]></title>
   <link href="http://venkateshcm.com/atom.xml" rel="self"/>
   <link href="http://venkateshcm.com/"/>
-  <updated>2014-05-14T20:10:08+05:30</updated>
+  <updated>2014-05-18T22:36:53+05:30</updated>
   <id>http://venkateshcm.com/</id>
   <author>
     <name><![CDATA[Venkatesh CM]]></name>
@@ -12,6 +12,227 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Caching To Scale Web Applications]]></title>
+    <link href="http://venkateshcm.com/2014/05/Caching-To-Scale-Web-Applications/"/>
+    <updated>2014-05-17T00:00:00+05:30</updated>
+    <id>http://venkateshcm.com/2014/05/Caching-To-Scale-Web-Applications</id>
+    <content type="html"><![CDATA[<p>In <a href="http://venkateshcm.com/2014/05/Architecture-Issues-Scaling-Web-Applications/">Architectural Issues While Scaling Web Applications</a>, I pointed to caching as solution to some of the issues faced while scaling web applications, in this post I will cover different ways of caching and how caching can reduce load on web application and hence improve performance and scalability of web applications. I will cover Web application &amp; database caching in next post.</p>
+
+<p>Caching is the most common way to improve performance or scalability of an web application. In fact, effectiveness of caching is arguably main reason for developer confidence to ignore premature optimization or to postpone fixing probable performance issue until detecting an issue. The underlying assumption for this confidence is (a) the performance optimization is may not be required (b) if required, performance issue could be fixed by caching.</p>
+
+<p>Effectiveness of caching in improving performance is due to the fact that most applications are read heavy and perform lot of repeatative operations. So application&rsquo;s performance can be greatly improved by avoiding repeatedly performing resource intensive operation several times. An operation could be resource intensive due to IO activity such as accessing database/service or due to computation/calcuations which are CPU intensive.</p>
+
+<p><b><i>What is caching?</i></b></p>
+
+<p>Caching is storing result of an operation which can be used later instead of repeating the operation again.</p>
+
+<p><b><i>Cache hit ratio</i></b></p>
+
+<p>Before executing an operation, a check is peformed to determine if the operation result (requested data) is already avaliable in cache. If requested data is avaliable, it is called <b>cache hit</b> and if requested data is not avaliable in cache, it is called <b>cache miss</b>. When cache miss occurs, the requested operation is executed and result is cached for future use (lazy cache population).</p>
+
+<p><b>Cache hit ratio</b> is the number of cache hits divided by total number of requests for an operation. For efficient utilization of memory, cache hit ration should be high.</p>
+
+<p>Cache hit ratio closer to 0 means most of the requests miss cache and the requested operation is executed every time. Low cache hit ratio could alos lead to large cache mamory usage as every cache miss could mean new addition to cache storage. Cache hit ratio closer to 1 means most of the requests have cache hits and requested operation is almost never executed.</p>
+
+<p><b><i>Cache population</i></b></p>
+
+<p>Cache could be populated lazily after the executing the operation very first time or by pre-populating cache at the start of application or by another process/background job. Lazy cache population is most common usage pattern but cache population by another background job can be effective when possible.</p>
+
+<p><b><i>Caching Layers in Web Architecture</i></b></p>
+
+<p>There are several layers in tipical web application architecture where caching can be performed.</p>
+
+<p><img class="article-img" border="0" src="http://venkateshcm.com/img/blog/CacheArchitecture.png" class="" style="display: inline-block;"></p>
+
+<p>As shown in the above diagram, caching can be done right from browser to database layer of architecture. Let us walk through each layer of caching touching how and what could be cached at that layer and understand pros and cons of caching at each layer.</p>
+
+<p>Few general points to note in the above diagram</p>
+
+<ul>
+<li>Caching at left most layer is better for latency.</li>
+<li>Caching at right most layers gives better control over granularity of caching and ways to clear or refreshing cache.</li>
+</ul>
+
+
+<p><b><i>Browser Cache</i></b></p>
+
+<p>Browser loads a web page by makes several requests to server for both dynamic resource and static resources like images, style sheets, javascripts etc. Since web application is used by user several times, most of the resources are repeatedly requested from server. Browser can store some of the resources in browser cache and subsequent requests load locally cached resource instead of making server request, reducing the load on web server.</p>
+
+<h6>Cache granularity</h6>
+
+
+<ul>
+<li>Static file caching like images , style sheets, javascripts etc</li>
+<li>Browsers also provide local storage (HTML5) and cookies which can be used for caching dynamic data.</li>
+</ul>
+
+
+<h6>How to populate cache</h6>
+
+
+<ul>
+<li>Browser caching works by setting HTTP header parameters like cache control headers of resource to be cached with time to live (TTL).</li>
+</ul>
+
+
+<h6>Regular Cache Refresh</h6>
+
+
+<ul>
+<li>Browser makes server requests after TTL time period and refreshes browser cache.</li>
+</ul>
+
+
+<h6>Forced Cache Refresh</h6>
+
+
+<ul>
+<li>Cache refresh can be forced by changing cache invalidation parameter in the URL of the resource. Cache invalidation can be</li>
+<li>a query parameter Eg. <a href="http://server.com/js/library.js?timestamp">http://server.com/js/library.js?timestamp</a></li>
+<li>a version number in resource path URL Eg. <a href="http://server.com/v2/js/library.js">http://server.com/v2/js/library.js</a></li>
+</ul>
+
+
+<p>In <a href="http://en.wikipedia.org/wiki/Single-page_application">Single Page Applications (SPA)</a>, the intial page is always loaded from server but all other dependents like images, stylesheets, javascripts etc. are loaded based on  (query parameter or version number in URL). When a new resource or application is deployed to production, cache invalidation parameter is changed to refresh cache.</p>
+
+<h6>Pros</h6>
+
+
+<ul>
+<li>User will experience best response time with no latency.</li>
+<li>Can cache both static files and dynamic data.</li>
+</ul>
+
+
+<h6>Cons</h6>
+
+
+<ul>
+<li>Load on server is marginally reduced since repeated requests for the same resource from other machine still hit the server.</li>
+<li>Dynamic data stored in HTML5 local storage could be security risk depending on application even through the html6 local storage is accessible to application domain only.</li>
+</ul>
+
+
+<p><b><i>Content Delivery Network(CDN)</i></b></p>
+
+<p><i>Content Delivery Network is a large distributed system of servers deployed in multiple data centers across the Internet. The goal of a CDN is to serve content to end-users with high availability and high performance. CDNs serve a large fraction of the Internet content today, including web objects (text, graphics and scripts), downloadable objects (media files, software, documents), applications (e-commerce, portals), live streaming media, on-demand streaming media, and social networks. </i> &mdash;from <a href="http://en.wikipedia.org/wiki/Content_delivery_network">Wikipedia</a></p>
+
+<p>Content Delivery Network (CDN) providers usually work with Internet Service Providers (ISP) and Telecom companies to add data centers at the last mile of internet connection. Browser request latency is reduced since servers handling requests to cached resource are close to browser client. Browsers usually hold limited number of connection to each host, if the number of requests to a host is more than browser connection limit, requests are queued. CDN caching provides another benifit of distributing resources over several named domains, hence handling more browser requests parallely providing better performance or response time to user. Only static resources are cached in CDN since TTL of resources is usually in the order of days and not seconds.</p>
+
+<h6>Cache granularity</h6>
+
+
+<ul>
+<li>Static File caching like images , style sheets, javascripts etc</li>
+</ul>
+
+
+<h6>How to populate cache</h6>
+
+
+<ul>
+<li>Static resources such as images, stylesheets, javascripts can be stored in CDN using CDN provided tool or API. CDN provides an url for each resource which can be used in web application.</li>
+</ul>
+
+
+<h6>Regular Cache Refresh</h6>
+
+
+<ul>
+<li>CDN tool or API can be used to configure time to live and when to replace static resource on CDN network servers, but replication of CDN resource over distributed network takes time, hence can not be used for very short TTL dynamic resource.</li>
+</ul>
+
+
+<h6>Forced Cache Refresh</h6>
+
+
+<ul>
+<li>Similar to browser cache refresh above, forced cache refresh can be achived by introducing versioning in url to invalidate cache.</li>
+</ul>
+
+
+<h6>Pros</h6>
+
+
+<ul>
+<li>User will experience good response time with very little latency since resource is returned from nearest server.</li>
+<li>Load on server is greatly reduced since all requests for the resource will be handle by CDN.</li>
+</ul>
+
+
+<h6>Cons</h6>
+
+
+<ul>
+<li>Cost of using CDN.</li>
+<li>Cache refresh time takes time as it has to refresh on highly distributed network of servers all over the world.</li>
+<li>Cache static resources only, since cache refresh is not easy.</li>
+</ul>
+
+
+<p><b><i>Reverse Proxy Cache</i></b></p>
+
+<p>A reverse proxy server is similar to normal proxy server, both act as intermediatary between browser client and web server. The main difference is normal proxy server is placed closer to client and reverse proxy server is placed closer to web server. Since requests and responses go through reverse proxy, reverse proxy can cache response to a url and use it to respond to subsequent requests without hitting the web application server. Dynamic resource caching is significant benifit of caching at reverse proxy level with very low TTLs (few seconds). Reverse proxy can cache data in memory or in external cache management tool like memcache, will discuss more on it later.</p>
+
+<p>There are several reverse proxy servers to choose from. Varnish, Squid and Ngnix are some of the options.</p>
+
+<h6>Cache granularity</h6>
+
+
+<ul>
+<li>Static file caching like images, style sheets, javascripts etc</li>
+<li>Dynamic page responsed of http requests.</li>
+</ul>
+
+
+<h6>How to populate cache</h6>
+
+
+<ul>
+<li>Other then reverse proxy server configurations to cache certain resources, proxy servers caching works using HTTP header parameters like cache control, expires headers of resource to be cached with time to leave (TTL).</li>
+</ul>
+
+
+<h6>Regular Cache Refresh</h6>
+
+
+<ul>
+<li>Reverse proxy servers provide ways to invalidate and refresh cache and they make server requests after TTL time period and to refresh cache.</li>
+</ul>
+
+
+<h6>Forced Cache Refresh</h6>
+
+
+<ul>
+<li>Reverse proxy servers can invalidate existing cache on demand.</li>
+</ul>
+
+
+<h6>Pros</h6>
+
+
+<ul>
+<li>Web server load is reduced significantly as multi machine requests can use cache compaired to browser cache where only requests for single machine are cached</li>
+<li>Reverse proxy servers can cache both static and dynamic resources. Eg. Home page of a site which is same for all clients can be cached for few seconds at reverse proxy.</li>
+<li>Most reverse proxy servers act as static file servers as-well, so web application never gets request for static resources.</li>
+</ul>
+
+
+<h6>Cons</h6>
+
+
+<ul>
+<li>User will experience latency since request has to hit distant reverse proxy to get response.</li>
+<li>Reverse proxy processing and caching is required, which means added hardware costs compared to CDN costs. But most reverse proxies can be used for multiple purposes -as load balancer, as static file servers as-well as caching layer, added cost of additional box should not be a problem.</li>
+</ul>
+
+
+<p>Next part of this post will cover different ways of caching within web application and database cache.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[How To Determine Web Application Thread Pool Size]]></title>
