@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Software Design | Venkatesh CM]]></title>
   <link href="http://venkateshcm.com/blog/categories/software-design/atom.xml" rel="self"/>
   <link href="http://venkateshcm.com/"/>
-  <updated>2014-05-18T23:36:17+05:30</updated>
+  <updated>2014-06-08T18:20:04+05:30</updated>
   <id>http://venkateshcm.com/</id>
   <author>
     <name><![CDATA[Venkatesh CM]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Zen Of Software Design - Part 2]]></title>
-    <link href="http://venkateshcm.com/2014/04/Zen-Of-Software-Design-Part-2/"/>
+    <link href="http://venkateshcm.com/2014/04/zen-of-software-design-part-2/"/>
     <updated>2014-04-28T00:00:00+05:30</updated>
-    <id>http://venkateshcm.com/2014/04/Zen-Of-Software-Design-Part-2</id>
+    <id>http://venkateshcm.com/2014/04/zen-of-software-design-part-2</id>
     <content type="html"><![CDATA[<p>This blog is part 2 of <a href="/2014/04/Zen-Of-Software-Design-Part-1/">Zen of Software Design : Part 1</a> which covers lines 1 to 9 of <a href="http://legacy.python.org/dev/peps/pep-0020/">Zen of Python</a>, if you have not read it please read it before reading this post. In this blog I will cover lines 10 to 19 of <a href="http://legacy.python.org/dev/peps/pep-0020/">Zen of Python</a></p>
 
 <p><b><i>Errors should never pass silently.</i></b><br/>

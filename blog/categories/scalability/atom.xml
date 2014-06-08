@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Scalability | Venkatesh CM]]></title>
   <link href="http://venkateshcm.com/blog/categories/scalability/atom.xml" rel="self"/>
   <link href="http://venkateshcm.com/"/>
-  <updated>2014-05-18T23:36:17+05:30</updated>
+  <updated>2014-06-08T18:20:04+05:30</updated>
   <id>http://venkateshcm.com/</id>
   <author>
     <name><![CDATA[Venkatesh CM]]></name>
@@ -12,6 +12,159 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Web Applications Caching]]></title>
+    <link href="http://venkateshcm.com/2014/06/Web-Application-Cache/"/>
+    <updated>2014-06-08T00:00:00+05:30</updated>
+    <id>http://venkateshcm.com/2014/06/Web-Application-Cache</id>
+    <content type="html"><![CDATA[<p>In <a href="/2014/05/Caching-To-Scale-Web-Applications/">Caching To Scale Web Applications</a>, we looked at ways to cache page response to url request by setting http cache headers to enable upstream systems to cache, mostly treating web application as black box. In this post we will look at</p>
+
+<ul>
+<li>Cache scopes</li>
+<li>Caches Policies</li>
+<li>Caching storage strategies and implications on performance</li>
+</ul>
+
+
+<p><b><i>Web Application Caching</i></b></p>
+
+<p>Caching within web application can be done at different scope and granularity.</p>
+
+<p>Some well know (common) ways of caching in web application is based on scope of cached values</p>
+
+<ol>
+<li>Session Cache :&ndash; Cached value is stored per key per user and cached values are used for a single user. For example :&ndash; User home country.</li>
+<li>Application Cache :&ndash; Cached value is stored per key and cached values are used for multiple users. For example :&ndash; List of countries.</li>
+</ol>
+
+
+<p>Session cache&rsquo;s Time To Live (TTL) is usually in minutes while Application cache&rsquo;s TTL varies widely and usually cached forever until changed with application events or business triggers.</p>
+
+<p>Application cache is memory efficient compared to Session cache, as same cached values is used by multiple users in application cache. But if the cached value is personalized data for a specific user, it should stay in Session Cache.</p>
+
+<p>While Session Cache has been used a lot (sometime abused), Application cache is not widely used.</p>
+
+<p><b><i>Cache Policies</i></b></p>
+
+<ul>
+<li><p>Write-through : Cache is updated along with backing datastore synchronously. Since both datastore and cache is always kept in sync, Write-through provides high data integrity and consistency at the cost of performance. Write-through caching makes sense with read heavy applications with very few writes.</p></li>
+<li><p>Write-back : Cache is updated synchronously and backing datastore is updated asynchronously. Since only cache is updated synchronously Write-back provides better performance but at the cost of inconsistency or data loss in an event of crash. Write-back caching policy makes sense when there is large number of writes and lossing latest data does not effect application.</p></li>
+</ul>
+
+
+<p>As you can see detecting and handling cached value modification is very important. In fact, it is good practice to make all cached values immutable.</p>
+
+<p><b><i>Cache strategies</i></b></p>
+
+<p>Below are different cache storage options available</p>
+
+<ul>
+<li>In-memory cache : cached values are stored in RAM memory.
+
+<ul>
+<li>(a) in-process : caching with-in application process</li>
+<li>(b) out-of-process : caching in another process</li>
+</ul>
+</li>
+<li>Persistent cache : caching in persistent systems like files or database.</li>
+</ul>
+
+
+<p>To choose caching option, we have to understand performance characteristics of different storage option. Lets start with time taken to perform typical operations on computer. Below numbers are from <a href="http://static.googleusercontent.com/media/research.google.com/en//people/jeff/stanford-295-talk.pdf">Jeff Dean presentation at Google</a>.</p>
+
+<table border="1"><tbody><tr><th colspan='2'><b>Numbers Everyone Should Know:</b></th><tr>
+<tr><td> Execute typical instruction :       </td><td style="text-align:right">   1/1,000,000,000 sec = 1 nanosec      </td></tr>
+<tr><td> Fetch from L1 cache memory  :        </td><td style="text-align:right">                   &nbsp;0.5 nanosec    </td></tr>
+<tr><td> Branch mis-prediction       :        </td><td style="text-align:right">                         5 nanosec      </td></tr>
+<tr><td> Fetch from L2 cache memory  :        </td><td style="text-align:right">                         7 nanosec      </td></tr>
+<tr><td> Mutex lock/unlock           :        </td><td style="text-align:right">                       100  nanosec      </td></tr>
+<tr><td> Fetch from main memory      :        </td><td style="text-align:right">                       100 nanosec      </td></tr>
+<tr><td> Compress 1K bytes with Zippy :        </td><td style="text-align:right">                       10,000 nanosec      </td></tr>
+<tr><td> Send 2K bytes over 1Gbps network :  </td><td style="text-align:right">                    20,000 nanosec      </td></tr>
+<tr><td> Read 1MB sequentially from memory :     </td><td style="text-align:right">                   250,000 nanosec      </td></tr>
+<tr><td> Round trip within same datacenter :     </td><td style="text-align:right">                   500,000 nanosec      </td></tr>
+<tr><td> Fetch from new disk location (seek) : </td><td style="text-align:right">                 10,000,000 nanosec      </td></tr>
+<tr><td> Read 1 MB sequentially from network : </td><td style="text-align:right">                 10,000,000 nanosec      </td></tr>
+<tr><td> Read 1MB sequentially from disk : </td><td style="text-align:right">                30,000,000 nanosec      </td></tr>
+<tr><td> Send packet CA->Netherlands->CA : </td><td style="text-align:right"> &nbsp;&nbsp;&nbsp;150 millisec = 150,000,000 nanosec      </td></tr>
+</tbody>
+</table>
+
+
+<br/>
+
+
+<p>First thing to notice from above numbers is, L1 and L2 cache. Caching is not only used in applications, network software, database systems, operating systems but also in Computer design.</p>
+
+<br/>
+
+
+<ul>
+<li><p>Back of the Envelope Calculations to determine performance of different caching strategies</p>
+
+<ul>
+<li><p>In-memory and in-process caching :&ndash; Cache reads are fetched directly from current process memory.</p>
+
+<p>In-memory and in-process cache fetch time = Fetch from main memory = 100 nanosec</p></li>
+<li><p>In-memory and out-of-process caching :&ndash; Cache reads are fetched from another process usually over network. Cached values are stored in another processes memory.</p>
+
+<p>In-memory and out-of-process cache fetch time = Round trip within same datacenter + Fetch from main memory = 500,000 nanosec + 100 nanosec</p></li>
+<li><p>Persistent caching :&ndash; Cache reads are read from disk usually over network.</p>
+
+<p>In-memory and out-of-process cache fetch time = Fetch from new disk location (seek) + Round trip within same datacenter = 10,000,000 nanosec + 500,000 nanosec</p>
+
+<p>Persistent caching does not always mean reading from disk, databases usually cache working set data ( often used data ) in its main memory so when there is <b>cache hit</b> it performs similar to In-memory and out-of-process.</p></li>
+</ul>
+</li>
+</ul>
+
+
+<h6>Summary</h6>
+
+
+<ul>
+<li>In-memory and in-process caching is 500 times faster than In-memory and out-of-process cache fetch time</li>
+<li>In-memory and out-of-process cache fetch time is 20 times faster than Persistent caching</li>
+</ul>
+
+
+<p>Clearly in-memory in-process caching is big winner and is widely used in web applications. Does that mean we should always use in-memory in-process caching ? To answer this question we have to understand characteristics of large scale web application.</p>
+
+<p><b><i>Caching in Web Applications Cluster</i></b></p>
+
+<p>As discussed in <a href="/2014/05/Architecture-Issues-Scaling-Web-Applications/">Architecture Issues Scaling Web Applications</a>, large scale web application should be able to</p>
+
+<ul>
+<li><p>Horizontal scale out
+  We should be able to add identical nodes in each layer to scale web applications.</p></li>
+<li><p>No single point of failure
+  Is large cluster of nodes, failure of single node can happen and it should not bring down application.</p></li>
+</ul>
+
+
+<p>Due to above two characteristics we end-up with cluster of nodes in any large scale applications.</p>
+
+<p>Getting back to caching, if we go with in-memory in-process caching, each node will have to cache required data. Below are few issues with in-process caching</p>
+
+<ul>
+<li>Redundant caching consumes lot of memory. In cluster with N web application processes same cached value has to be stored N times.</li>
+<li>Each node will have to face cache miss and perform resource intensive operation before caching. i.e. In N Node cluster resource intensive operation is performed N times. This problem become noticeable if TTL of cached value is low. For Example :&ndash; A web application cluster with 100 nodes, and TTL of 1 min will perform 100 resource intensive operations every minute.</li>
+<li>Cache Refresh is another major problem with in-memory in process in cluster of web application process. Refreshing cache across the cluster is not easy and if cache is refreshed based on time. Due to machine time synchronization issue stale cached value will be used in some nodes, depending on application it could cause application in-consistent results based on which node handles request.</li>
+</ul>
+
+
+<p>Out-of-process caching gets around the above issues by storing cached values in distributed caching systems like memcache. Due to central cache handling in out-of-process caching</p>
+
+<ul>
+<li>If one of the web application node caches a value, it is available to all other nodes reducing cache misses.</li>
+<li>Cache can be refreshed or invalided easily by updating central cache system.</li>
+</ul>
+
+
+<p>Persistent caches is used when it is important to recover from crash with cached values intact. It is achieved by re-loading cached data from disk.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Caching To Scale Web Applications]]></title>
@@ -230,7 +383,7 @@
 </ul>
 
 
-<p>Next part of this post will cover different ways of caching within web application and database cache.</p>
+<p>Next part of this post will cover different ways of <a href="/2014/06/Web-Application-Cache/">caching within web application</a>.</p>
 ]]></content>
   </entry>
   
@@ -1015,279 +1168,6 @@ Performance tuning or scaling IO bound applications is a difficult job due to it
 <p><b><i>Conclusion</i></b></p>
 
 <p>With Lightweight thread (Fibers) we can do Co-Operative multi-tasking which voluntarily relinquish control and resume processing. If application framework and libraries support Fibers or library wrappers created as shown in above example, functional and application logic can be written in synchronous style. Presence of Fibers, async code can be abstracted into Framework and libraries from functional code. As functional code tend to be larger than wrapper code that might be required, this will substantially reduce application complexity.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Reactor Pattern Part 3 - Promises to solve callback hell]]></title>
-    <link href="http://venkateshcm.com/2014/04/Reactor-Pattern-Part-3-Promises-to-solve-callback-hell/"/>
-    <updated>2014-04-23T00:00:00+05:30</updated>
-    <id>http://venkateshcm.com/2014/04/Reactor-Pattern-Part-3-Promises-to-solve-callback-hell</id>
-    <content type="html"><![CDATA[<p>In <a href="/2014/04/Reactor-Pattern-Part-1-Non-blocking-I-O/">Reactor Pattern Part 1 : Applications with Blocking I/O</a>, I went through issues faced by a single threaded application to scale to handle more requests pre box and the corresponding issues it introduces. In <a href="/2014/04/Reactor-Pattern-Part-2-Non-blocking-I-O/">Reactor Pattern Part 2 : Applications with Non-Blocking I/O</a> I went through what Reactor Pattern is and how it fixes the Blocking IO issues and mentioned call back issue that async code introduces.</p>
-
-<p>Lets get little more detail on what the callback issues are and introduce few options or libraries used to partially solve the issue, in this blog.</p>
-
-<p><b><i>Example scenario</i></b></p>
-
-<p>Consider a simple scenario where Restful service has to return a list of events for a given user. User is identified by Facebook Id. The service datastore has two tables or collections, (a) User table and (b) Event table which stores.</p>
-
-<ul>
-<li><p>user information</p>
-
-<ul>
-<li>id</li>
-<li>fb_id</li>
-<li>name</li>
-<li>&hellip;.</li>
-</ul>
-</li>
-<li><p>events information.</p>
-
-<ul>
-<li>id</li>
-<li>user_id</li>
-<li>event_name</li>
-<li>event_desc</li>
-<li>start_date</li>
-<li>&hellip;.</li>
-</ul>
-</li>
-</ul>
-
-
-<p>Assuming, you are not allowed to join user and event table or datastore is mongodb. The service controller will use below Pseudocode steps to get events.</p>
-
-<ul>
-<li>Given facebook id, get user id from User collection</li>
-<li>Given user id, get events for the user from  events collection.</li>
-</ul>
-
-
-<p><b><i>Sequential Code with Blocking I/O</i></b></p>
-
-<p>In normal scenario the above steps directly translate to below code. If performance or scalability is not something playing on developers mind, Sequential code is the simplest and normal thing to do.</p>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>Sequential Code With Blocking I/O </span></figcaption>
-<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">function</span> <span class="nx">getUserEvents</span><span class="p">(</span><span class="nx">request</span><span class="p">,</span><span class="nx">response</span><span class="p">){</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="kd">var</span> <span class="nx">facebook_id</span> <span class="o">=</span> <span class="nx">request</span><span class="p">.</span><span class="nx">param</span><span class="p">(</span><span class="s1">&#39;facebook_id&#39;</span><span class="p">);</span>
-</span><span class='line'><span class="k">try</span><span class="p">{</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">user</span> <span class="o">=</span> <span class="nx">db</span><span class="p">.</span><span class="nx">users</span><span class="p">.</span><span class="nx">findOne</span><span class="p">({</span><span class="nx">fb_id</span><span class="o">:</span><span class="nx">facebook_id</span><span class="p">});</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">events</span> <span class="o">=</span> <span class="nx">db</span><span class="p">.</span><span class="nx">events</span><span class="p">.</span><span class="nx">find</span><span class="p">({</span><span class="nx">user_id</span><span class="o">:</span><span class="nx">user</span><span class="p">.</span><span class="nx">id</span><span class="p">});</span>
-</span><span class='line'>    <span class="nx">response</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="nx">events</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span><span class="k">catch</span><span class="p">(</span><span class="nx">err</span><span class="p">){</span>
-</span><span class='line'>    <span class="nx">response</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">500</span><span class="p">).</span><span class="nx">send</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<p>There are religious wars between Ruby on Rails and NodeJS developers on Sequential Vs Evented style code.</p>
-
-<ul>
-<li>Key Points
-
-<ul>
-<li>Majority of web applications (Ruby on Rails, Java Spring, Django etc) are written in sequential style.</li>
-<li>Sequential style is simple and readable.</li>
-<li>Most people think in sequential style i.e. Developers tend to break application logic into sequential steps like Pseudocode provided above.</li>
-<li>Boundaries of Pseudocode Step does not usually end at network call or IO call.</li>
-<li>Non-blocking I/O is considered when we need better scalabilty or performance.</li>
-</ul>
-</li>
-</ul>
-
-
-<p>Unfortunately Sequential code is linked to blocking I/O calls, becuase threads follow pre-emptive multitasking and not co-operative multitaking. More on this later when talking about Fibers.</p>
-
-<p><b><i>Callback based solution</i></b></p>
-
-<p>To solve Blocking I/O problem, code is split to three parts</p>
-
-<ol>
-<li>Processing done before making a network or IO call</li>
-<li>Network or IO call</li>
-<li>Processing done after getting back data from network or IO call.</li>
-</ol>
-
-
-<p>Execution flow for each of above steps is seperated and such that each of them can be executed from the event loop.</p>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>Non Blocking I/O with Call backs </span></figcaption>
-<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">function</span> <span class="nx">getUserEvents</span><span class="p">(</span><span class="nx">request</span><span class="p">,</span><span class="nx">response</span><span class="p">){</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="kd">var</span> <span class="nx">returnEvents</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span><span class="nx">events</span><span class="p">){</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="nx">respone</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">500</span><span class="p">).</span><span class="nx">send</span><span class="p">(</span><span class="nx">err</span><span class="p">);;</span>
-</span><span class='line'>        <span class="nx">response</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="nx">events</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">});</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">var</span> <span class="nx">givenUserFindAndReturnEvents</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span><span class="nx">user</span><span class="p">){</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="nx">respone</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">500</span><span class="p">).</span><span class="nx">send</span><span class="p">(</span><span class="nx">err</span><span class="p">);;</span>
-</span><span class='line'>    <span class="nx">db</span><span class="p">.</span><span class="nx">events</span><span class="p">.</span><span class="nx">find</span><span class="p">({</span><span class="nx">user_id</span><span class="o">:</span><span class="nx">user</span><span class="p">.</span><span class="nx">id</span><span class="p">},</span><span class="nx">returnEvents</span><span class="p">);</span>
-</span><span class='line'><span class="p">};</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">var</span> <span class="nx">findUserAndReturnEvents</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">facebook_id</span> <span class="o">=</span> <span class="nx">request</span><span class="p">.</span><span class="nx">param</span><span class="p">(</span><span class="s1">&#39;facebook_id&#39;</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">db</span><span class="p">.</span><span class="nx">users</span><span class="p">.</span><span class="nx">findOne</span><span class="p">({</span><span class="nx">fb_id</span><span class="o">:</span><span class="nx">facebook_id</span><span class="p">},</span> <span class="nx">givenUserFindAndReturnEvents</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="nx">findUserAndReturnEvents</span><span class="p">();</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<p>Notice that request and response objects are not passed to sub-functions. The sub-functions get access request and response since sub-functions are <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Closures">javascript closures</a>. In fact if we move the sub-functions out-side getUserEvents method, it would not work. Which lead to chooice of keeping <i>givenUserFindAndReturnEvents</i> and <i>returnEvents</i> as sub-functions. <a href="http://en.wikipedia.org/wiki/Currying">Curring</a> can be used to fix this problem, more on that in another blog.</p>
-
-<p>Each of the sub-functions (<i>findUserAndReturnEvents</i>, <i>givenUserFindAndReturnEvents</i>, <i>returnEvents</i>) are executed asynchronously. functions <i>givenUserFindAndReturnEvents</i> and <i>returnEvents</i> are called call-back functions since they are triggered after getting back user object and event objects respectively from datastore.</p>
-
-<p>The sub-functions could have been left as in-line or nested lamda functions. Nesting several such functions is another issue with call-backs.</p>
-
-<ul>
-<li>Key Points
-
-<ul>
-<li>Code is separated based on pre-network call and post network call.</li>
-<li>The caller of the sub-function has to pass a callback function to execute after finishing sub-function task.</li>
-<li>Sequential logic is expressed asynchronously.</li>
-<li>Asynchronous code above is more scalable but may not be more performant (response time).</li>
-<li>Call-back causes readability issues &ndash; callback hell.</li>
-<li>Following execution flow is difficult, so called spaghetti-code.</li>
-<li>Non-Blocking API&rsquo;s impose major constrain on how you structure your code.</li>
-<li>Functions are hierarchy, i.e. calling function is responsible for functionality it provides as-well as the sub-function it calls. For example:&ndash; givenUserFindAndReturnEvents includes functionality of finding and returning Events to http response.</li>
-</ul>
-</li>
-</ul>
-
-
-<p><b><i>Promise based solution</i></b></p>
-
-<p>To solve Call-back issues like spaghetti-code, we could use code structuring library like <a href="http://documentup.com/kriskowal/q/">q promise</a>. Promise library provides some code style standards and structuring, making it more readable compared to call-back based code shown above.</p>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>Non Blocking I/O with Promises </span></figcaption>
-<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="kd">var</span> <span class="nx">loadEventsForUser</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span><span class="nx">user</span><span class="p">){</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="k">return</span> <span class="nx">db</span><span class="p">.</span><span class="nx">events</span><span class="p">.</span><span class="nx">find</span><span class="p">({</span><span class="nx">user_id</span><span class="o">:</span><span class="nx">user</span><span class="p">.</span><span class="nx">id</span><span class="p">});</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">};</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kd">var</span> <span class="nx">findUser</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(){</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="kd">var</span> <span class="nx">facebook_id</span> <span class="o">=</span> <span class="nx">request</span><span class="p">.</span><span class="nx">param</span><span class="p">(</span><span class="s1">&#39;facebook_id&#39;</span><span class="p">);</span>
-</span><span class='line'><span class="k">return</span> <span class="nx">db</span><span class="p">.</span><span class="nx">users</span><span class="p">.</span><span class="nx">findOne</span><span class="p">({</span><span class="nx">fb_id</span><span class="o">:</span><span class="nx">facebook_id</span><span class="p">});</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kd">function</span> <span class="nx">getUserEvents</span><span class="p">(</span><span class="nx">request</span><span class="p">,</span><span class="nx">response</span><span class="p">){</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="kd">var</span> <span class="nx">success</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">events</span><span class="p">){</span>
-</span><span class='line'>        <span class="nx">response</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="nx">events</span><span class="p">);</span>
-</span><span class='line'><span class="p">};</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">var</span> <span class="nx">error</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">){</span>
-</span><span class='line'>    <span class="nx">response</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">500</span><span class="p">).</span><span class="nx">send</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
-</span><span class='line'><span class="p">};</span>
-</span><span class='line'>
-</span><span class='line'><span class="nx">findUser</span><span class="p">()</span>
-</span><span class='line'><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">loadEventsForUser</span><span class="p">)</span>
-</span><span class='line'><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">success</span><span class="p">)</span>
-</span><span class='line'><span class="p">.</span><span class="nx">fail</span><span class="p">(</span><span class="nx">error</span><span class="p">);</span>
-</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<p>Notice how code is split into smaller independent functions and how they are chained together using <i>.then</i> and <i>.fail</i> functions. Another important feature of promise library is how exception flow is handled. Compare promise based code with the call back based one above. Observe that errors are handled in each of the call back functions and when using promise, errors are isolated and handle seperately.</p>
-
-<ul>
-<li>Key Points
-
-<ul>
-<li>Functions are flat, i.e. calling function is responsible for only its own functionality and can be used independently. For example :&ndash; findUser can be used independent of loadEventsForUser.</li>
-<li>Spliting sequential code into indenpendent functions which are reusable in multiple scenarios is not always easy. Many times functions are created just to work around Non-blocking reactive pattern.</li>
-<li>Functions can be used in other flows and could form reusable components.</li>
-<li>Better readability compared to call back option but not as simpile as sequential option</li>
-<li>Better exception handling compared to call back option but not as simple as sequential option.</li>
-<li>When libraries don&rsquo;t support promises, we end up writing boiler plat code to create promise and to handle async flows.</li>
-</ul>
-</li>
-</ul>
-
-
-<p><b><i>Conclusion</i></b></p>
-
-<p>Async or Non-blocking IO introduces new challenges on how applications should to be structured and how async call backs can be abstracted away using promises like library. We need Non-blocking IO application since, sequencial blocking IO applications are not scalable. So Non-Blocking IO or Asynchronous code is not a desired feature but a nessesary evil to achive scalability.</p>
-
-<p>Finally, assumption that Non-blocking IO and Asynchronous code are clubed together and one comes with other. Is it possible to get the best of both the worlds, i.e. Sequential code and Non-Blocking IO scalability. In fact, I think there is an option based on Fibers which can provide best of both the worlds. I will cover Fibers and how they achive both Non-Blocking IO and Sequential codebase in the <a href="/2014/04/Reactor-Pattern-Part-4-Write-Sequential-Non-Blocking-IO-Code-With-Fibers-In-NodeJS/">Reactor Pattern Part 4 Write Sequential Non Blocking IO Code With Fibers In NodeJS</a>.</p>
 ]]></content>
   </entry>
   
